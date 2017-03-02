@@ -12,19 +12,19 @@ This project aims to design and implement deep neural networks
 for scene understanding for autonomous vehicles.
 
 ## Documentation
- - Overleaf [link]. (https://www.overleaf.com/read/dndkxjrdrrzb)
+ - Overleaf [link](https://www.overleaf.com/read/dndkxjrdrrzb)
 
 
 # References
 
 
-# [Very Deep Convolutional Networks for Large-Scale Image Recognition](https://arxiv.org/pdf/1409.1556.pdf)
-## Authors: Karen Simonyan & Andrew Zisserman
+## [Very Deep Convolutional Networks for Large-Scale Image Recognition](https://arxiv.org/pdf/1409.1556.pdf)
+### Authors: Karen Simonyan & Andrew Zisserman
 
-## Summary
+### Summary
 
 
-# [Deep Residual Learning for Image Recognition](https://arxiv.org/pdf/1512.03385.pdf)
-## Authors: Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
+## [Deep Residual Learning for Image Recognition](https://arxiv.org/pdf/1512.03385.pdf)
+### Authors: Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
 
-## Summary
+### Summary
