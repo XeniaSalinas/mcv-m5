@@ -2,17 +2,18 @@
 
 ## Team 3: NETSPRESSO
 ### Team Members
- - Cristina Bustos <mcb9216@gmail.com>
- - Lidia Garrucho Moras <lidiaxu3@gmail.com>
- - Xian López Álvarez <lopezalvarez.xian@gmail.com>
- - Xènia Salinas <salinasxenia@gmail.com>
+ - [Cristina Bustos Rodriguez](https://github.com/cristinabustos16)  <mcb9216@gmail.com>  
+ - [Lidia Garrucho Moras](https://github.com/LidiaGarrucho) <lidiaxu3@gmail.com>
+ - [Xian López Álvarez](https://github.com/xianlopez)  <lopezalvarez.xian@gmail.com>
+ - [Xènia Salinas Ventalló](https://github.com/XeniaSalinas)  <salinasxenia@gmail.com>
 
 # Scope
 This project aims to design and implement deep neural networks 
 for scene understanding for autonomous vehicles.
 
 ## Documentation
- - Overleaf [link](https://www.overleaf.com/read/dndkxjrdrrzb)
+ - Report in Overleaf [link](https://www.overleaf.com/read/dndkxjrdrrzb)
+ - Presentation in Google Slides [link](https://docs.google.com/presentation/d/172037oHvwqqKpi6Bd6sYmrkcISgEO9Ft_OU5IjWsbkY/edit?usp=sharing)
 
 
 # References
