@@ -14,6 +14,4 @@ for scene understanding for autonomous vehicles.
 ## Documentation
  - Report in Overleaf [link](https://www.overleaf.com/read/dndkxjrdrrzb)
  - Presentation in Google Slides [link](https://docs.google.com/presentation/d/172037oHvwqqKpi6Bd6sYmrkcISgEO9Ft_OU5IjWsbkY/edit?usp=sharing)
-
-
-# Reference papers summaries [link](https://github.com/XeniaSalinas/mcv-m5/blob/master/summaries.md)
+ - Reference papers summaries [link](https://github.com/XeniaSalinas/mcv-m5/blob/master/summaries.md)
