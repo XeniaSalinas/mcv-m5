@@ -2,10 +2,10 @@
 
 ## Team 3: NETSPRESSO
 ### Team Members
- - [Cristina Bustos Rodriguez](https://github.com/cristinabustos16)  <mcb9216@gmail.com>  
- - [Lidia Garrucho Moras](https://github.com/LidiaGarrucho) <lidiaxu3@gmail.com>
- - [Xian López Álvarez](https://github.com/xianlopez)  <lopezalvarez.xian@gmail.com>
- - [Xènia Salinas Ventalló](https://github.com/XeniaSalinas)  <salinasxenia@gmail.com>
+ - Cristina Bustos Rodriguez: [cristinabustos16](https://github.com/cristinabustos16) - <mcb9216@gmail.com>  
+ - Lidia Garrucho Moras: [LidiaGarrucho](https://github.com/LidiaGarrucho) - <lidiaxu3@gmail.com>
+ - Xian López Álvarez: [xianlopez](https://github.com/xianlopez) - <lopezalvarez.xian@gmail.com>
+ - Xènia Salinas Ventalló: [XeniaSalinas](https://github.com/XeniaSalinas) - <salinasxenia@gmail.com>
 
 # Scope
 This project aims to design and implement deep neural networks 
