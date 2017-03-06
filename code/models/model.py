@@ -67,10 +67,12 @@ class One_Net_Model(Model):
 
             # Create a data generator
             data_gen_queue, _stop, _generator_threads = GeneratorEnqueuer(self.test_gen, max_q_size=1)
+#            data_gen_queue, _stop, _generator_threads = GeneratorEnqueuer(test_gen, max_q_size=1)
 
             # Process the dataset
             start_time = time.time()
-            for _ in range(int(math.ceil(self.cf.dataset.n_images_train/float(self.cf.batch_size_test)))):
+#            for _ in range(int(math.ceil(self.cf.dataset.n_images_train/float(self.cf.batch_size_test)))):
+            for _ in range(int(math.ceil(self.cf.dataset.n_images_test/float(self.cf.batch_size_test)))):
 
                 # Get data for this minibatch
                 data = data_gen_queue.get()
