@@ -31,9 +31,9 @@ batch_size_test              = 30              # Batch size during testing
 crop_size_train              = None            # Crop size during training (Height, Width) or None
 crop_size_valid              = None            # Crop size during validation
 crop_size_test               = None            # Crop size during testing
-resize_train                 = (224, 224)      # Resize the image during training (Height, Width) or None
-resize_valid                 = (224, 224)      # Resize the image during validation
-resize_test                  = (224, 224)      # Resize the image during testing
+resize_train                 = (227, 227)      # Resize the image during training (Height, Width) or None
+resize_valid                 = (227, 227)      # Resize the image during validation
+resize_test                  = (227, 227)      # Resize the image during testing
 
 # Data shuffle
 shuffle_train                = True            # Whether to shuffle the training data
@@ -88,10 +88,10 @@ cb_weights_method                  = None      # Label weight balance [None | 'm
 
 # Data augmentation for training
 da_rotation_range                  = 0          # Rnd rotation degrees 0-180
-da_width_shift_range               = 0.0        # Rnd horizontal shift
-da_height_shift_range              = 0.0        # Rnd vertical shift
+da_width_shift_range               = 0.1        # Rnd horizontal shift
+da_height_shift_range              = 0.1        # Rnd vertical shift
 da_shear_range                     = 0.0        # Shear in radians
-da_zoom_range                      = 0.0        # Zoom
+da_zoom_range                      = 0.2        # Zoom
 da_channel_shift_range             = 0.         # Channecf.l shifts
 da_fill_mode                       = 'constant' # Fill mode
 da_cval                            = 0.         # Void image value

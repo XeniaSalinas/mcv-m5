@@ -60,6 +60,9 @@ class One_Net_Model(Model):
     # Predict the model
     def predict(self, test_gen, tag='pred'):
         if self.cf.pred_model:
+            print('Predict method not implemented.')
+            return
+            # TODO fix model predict method
             print('\n > Predicting the model...')
             # Load best trained model
             # self.model.load_weights(os.path.join(self.cf.savepath, "weights.hdf5"))
@@ -67,10 +70,12 @@ class One_Net_Model(Model):
 
             # Create a data generator
             data_gen_queue, _stop, _generator_threads = GeneratorEnqueuer(self.test_gen, max_q_size=1)
+#            data_gen_queue, _stop, _generator_threads = GeneratorEnqueuer(test_gen, max_q_size=1)
 
             # Process the dataset
             start_time = time.time()
-            for _ in range(int(math.ceil(self.cf.dataset.n_images_train/float(self.cf.batch_size_test)))):
+#            for _ in range(int(math.ceil(self.cf.dataset.n_images_train/float(self.cf.batch_size_test)))):
+            for _ in range(int(math.ceil(self.cf.dataset.n_images_test/float(self.cf.batch_size_test)))):
 
                 # Get data for this minibatch
                 data = data_gen_queue.get()
@@ -116,19 +121,24 @@ class One_Net_Model(Model):
             fps = float(self.cf.dataset.n_images_test) / total_time
             s_p_f = total_time / float(self.cf.dataset.n_images_test)
             print ('   Testing time: {}. FPS: {}. Seconds per Frame: {}'.format(total_time, fps, s_p_f))
-
-            # Compute Jaccard per class
             metrics_dict = dict(zip(self.model.metrics_names, test_metrics))
-            I = np.zeros(self.cf.dataset.n_classes)
-            U = np.zeros(self.cf.dataset.n_classes)
-            jacc_percl = np.zeros(self.cf.dataset.n_classes)
-            for i in range(self.cf.dataset.n_classes):
-                I[i] = metrics_dict['I'+str(i)]
-                U[i] = metrics_dict['U'+str(i)]
-                jacc_percl[i] = I[i] / U[i]
-                print ('   {:2d} ({:^15}): Jacc: {:6.2f}'.format(i,
-                                                                 self.cf.dataset.classes[i],
-                                                                 jacc_percl[i]*100))
-            # Compute jaccard mean
-            jacc_mean = np.nanmean(jacc_percl)
-            print ('   Jaccard mean: {}'.format(jacc_mean))
+            print ('   Test metrics: ')
+            for k in metrics_dict.keys():
+                print ('      {}: {}'.format(k, metrics_dict[k]))
+
+            if self.cf.problem_type == 'segmentation':
+                # Compute Jaccard per class
+                metrics_dict = dict(zip(self.model.metrics_names, test_metrics))
+                I = np.zeros(self.cf.dataset.n_classes)
+                U = np.zeros(self.cf.dataset.n_classes)
+                jacc_percl = np.zeros(self.cf.dataset.n_classes)
+                for i in range(self.cf.dataset.n_classes):
+                    I[i] = metrics_dict['I'+str(i)]
+                    U[i] = metrics_dict['U'+str(i)]
+                    jacc_percl[i] = I[i] / U[i]
+                    print ('   {:2d} ({:^15}): Jacc: {:6.2f}'.format(i,
+                                                                     self.cf.dataset.classes[i],
+                                                                     jacc_percl[i]*100))
+                # Compute jaccard mean
+                jacc_mean = np.nanmean(jacc_percl)
+                print ('   Jaccard mean: {}'.format(jacc_mean))

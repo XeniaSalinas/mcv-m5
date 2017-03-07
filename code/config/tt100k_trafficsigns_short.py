@@ -31,9 +31,9 @@ batch_size_test              = 30              # Batch size during testing
 crop_size_train              = None            # Crop size during training (Height, Width) or None
 crop_size_valid              = None            # Crop size during validation
 crop_size_test               = None            # Crop size during testing
-resize_train                 = (224, 224)      # Resize the image during training (Height, Width) or None
-resize_valid                 = (224, 224)      # Resize the image during validation
-resize_test                  = (224, 224)      # Resize the image during testing
+resize_train                 = (227, 227)      # Resize the image during training (Height, Width) or None
+resize_valid                 = (227, 227)      # Resize the image during validation
+resize_test                  = (227, 227)      # Resize the image during testing
 
 # Data shuffle
 shuffle_train                = True            # Whether to shuffle the training data
@@ -47,7 +47,7 @@ seed_test                    = 1924            # Random seed for the testing shu
 optimizer                    = 'rmsprop'       # Optimizer
 learning_rate                = 0.0001          # Training learning rate
 weight_decay                 = 0.              # Weight decay or L2 parameter norm penalty
-n_epochs                     = 30              # Number of epochs during training
+n_epochs                     = 5              # Number of epochs during training
 
 # Callback save results
 save_results_enabled         = False           # Enable the Callback
