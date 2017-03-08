@@ -85,7 +85,7 @@ def main():
     parser.add_argument('-s', '--shared_path', type=str,
                         default='/home/master/m5_week1/data', help='Name of the experiment')
     parser.add_argument('-l', '--local_path', type=str,
-                        default='/home/master/m5_week1/datatmp', help='Name of the experiment')
+                        default='/home/master/m5_week1/data', help='Name of the experiment')
 
     arguments = parser.parse_args()
 
