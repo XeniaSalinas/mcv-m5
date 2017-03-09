@@ -10,8 +10,10 @@
 # Scope
 This project aims to design and implement deep neural networks 
 for scene understanding for autonomous vehicles.
+The first stage of this project is based on object recognition. We aim to classify traffic signals according to its meaning and secene crops depending on the correspondance to a pedestrains, cyclist or vehicles.
 
 ## Documentation
  - Report in Overleaf [link](https://www.overleaf.com/read/dndkxjrdrrzb)
  - Presentation in Google Slides [link](https://docs.google.com/presentation/d/172037oHvwqqKpi6Bd6sYmrkcISgEO9Ft_OU5IjWsbkY/edit?usp=sharing)
  - Reference papers summaries [link](https://github.com/XeniaSalinas/mcv-m5/blob/master/summaries.md)
+ - Experiments results [link](https://drive.google.com/drive/folders/0B2fYuDqzasf7TU04SFpfNTh2dzA)
