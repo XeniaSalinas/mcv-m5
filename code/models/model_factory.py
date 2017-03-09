@@ -9,8 +9,9 @@ from keras.utils.visualize_util import plot
 #from models.lenet import build_lenet
 #from models.alexNet import build_alexNet
 from models.vgg import build_vgg
-#from models.resnet import build_resnet50
+from models.resNet import build_resnet50
 #from models.inceptionV3 import build_inceptionV3
+from models.denseNet import build_denseNet
 
 # Detection models
 from models.yolo import build_yolo
@@ -78,7 +79,7 @@ class Model_Factory():
     # Creates a Model object (not a Keras model)
     def make(self, cf, optimizer=None):
         if cf.model_name in ['lenet', 'alexNet', 'vgg16', 'vgg19', 'resnet50',
-                             'InceptionV3', 'fcn8', 'unet', 'segnet',
+                             'InceptionV3', 'denseNet', 'fcn8', 'unet', 'segnet',
                              'segnet_basic', 'resnetFCN', 'yolo']:
             if optimizer is None:
                 raise ValueError('optimizer can not be None')
@@ -148,8 +149,11 @@ class Model_Factory():
                                    load_pretrained=cf.load_imageNet,
                                    freeze_layers_from=cf.freeze_layers_from)
         elif cf.model_name == 'InceptionV3':
-            model = build_inceptionV3(in_shape, cf.dataset.n_classes,
-                                      cf.weight_decay,
+            model = build_inceptionV3(in_shape, cf.dataset.n_classes, cf.weight_decay,
+                                      load_pretrained=cf.load_imageNet,
+                                      freeze_layers_from=cf.freeze_layers_from)
+        elif cf.model_name == 'denseNet':
+            model = build_denseNet(in_shape, cf.dataset.n_classes, 16, 32, cf.weight_decay,
                                       load_pretrained=cf.load_imageNet,
                                       freeze_layers_from=cf.freeze_layers_from)
         elif cf.model_name == 'yolo':
