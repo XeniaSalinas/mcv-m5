@@ -2,7 +2,7 @@ from keras.applications.inception_v3 import InceptionV3
 from keras.models import Model
 from keras.layers import Dense, Dropout, Activation, Flatten
 
-
+# Paper: https://arxiv.org/pdf/1512.00567.pdf
 
 def build_inceptionV3(img_shape=(3, 224, 224), n_classes=1000, n_layers=16, l2_reg=0.,
                 load_pretrained=False, freeze_layers_from='base_model'):
