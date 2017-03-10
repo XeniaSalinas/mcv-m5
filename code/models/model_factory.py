@@ -149,11 +149,13 @@ class Model_Factory():
                                    load_pretrained=cf.load_imageNet,
                                    freeze_layers_from=cf.freeze_layers_from)
         elif cf.model_name == 'InceptionV3':
-            model = build_inceptionV3(in_shape, cf.dataset.n_classes, cf.weight_decay,
+            model = build_inceptionV3(in_shape, cf.dataset.n_classes,
+                                      cf.weight_decay,
                                       load_pretrained=cf.load_imageNet,
                                       freeze_layers_from=cf.freeze_layers_from)
         elif cf.model_name == 'denseNet':
-            model = build_denseNet(in_shape, cf.dataset.n_classes, 16, 32, cf.weight_decay,
+            model = build_denseNet(in_shape, cf.dataset.n_classes, 100, 12,
+                                      cf.weight_decay,
                                       load_pretrained=cf.load_imageNet,
                                       freeze_layers_from=cf.freeze_layers_from)
         elif cf.model_name == 'yolo':
