@@ -14,7 +14,7 @@ weights_file                 = 'weights/weights_vgg16_taskA_50_epochs.hdf5'  # T
 
 # Parameters
 train_model                  = True            # Train the model
-test_model                   = False           # Test the model
+test_model                   = True            # Test the model
 pred_model                   = False           # Predict using the model
 
 # Debug
@@ -79,7 +79,7 @@ norm_imageNet_preprocess           = False     # Normalize following imagenet pr
 norm_fit_dataset                   = True      # If True it recompute std and mean from images. Either it uses the std and mean set at the dataset config file
 norm_rescale                       = 1/255.    # Scalar to divide and set range 0-1
 norm_featurewise_center            = True      # Substract mean - dataset
-norm_featurewise_std_normalization = False     # Divide std - dataset
+norm_featurewise_std_normalization = True     # Divide std - dataset
 norm_samplewise_center             = False     # Substract mean - sample
 norm_samplewise_std_normalization  = False     # Divide std - sample
 norm_gcn                           = False     # Global contrast normalization
