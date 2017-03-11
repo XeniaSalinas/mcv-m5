@@ -6,15 +6,17 @@ from keras.layers.normalization import BatchNormalization
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.layers.pooling import GlobalAveragePooling2D
 from keras.layers import Input, merge
+from keras.regularizers import l2
 
 
 # Paper: https://arxiv.org/pdf/1608.06993.pdf
 
-def conv_block(input_tensor, filters, block, layer):
+def conv_block(input_tensor, filters, l2_reg, block, layer):
     """
     # Arguments
         input_tensor: input tensor
         filters: number of filters for the convolutional layers
+        l2_reg: regularizer factor
         block: '1','2'..., current block label, used for generating layer names
         layer: '1','2'..., current layer label, used for generating layer names
     """
@@ -22,24 +24,26 @@ def conv_block(input_tensor, filters, block, layer):
         bn_axis = 3
     else:
         bn_axis = 1
-    conv_name_base = 'conv' + str(block) + '_' + str(layer) + '_conv'
-    bn_name_base = 'conv' + str(block) + '_' + str(layer)  + '_bn'
+    conv_name_base = 'block' + str(block) + '_layer' + str(layer) + '_conv'
+    bn_name_base = 'block' + str(block) + '_layer' + str(layer)  + '_bn'
 
-    x = BatchNormalization(axis=bn_axis, name=bn_name_base + '1')(input_tensor)
+    x = BatchNormalization(axis=bn_axis, name=bn_name_base + '1', gamma_regularizer=l2(l2_reg), beta_regularizer=l2(l2_reg))(input_tensor)
     x = Activation('relu')(x)
-    x = Convolution2D(4*filters, 1, 1, border_mode='same', name=conv_name_base + '1')(x)
+    x = Convolution2D(4*filters, 1, 1, border_mode='same', name=conv_name_base + '1', W_regularizer=l2(l2_reg))(x)
 
-    x = BatchNormalization(axis=bn_axis, name=bn_name_base + '2')(x)
+    x = BatchNormalization(axis=bn_axis, name=bn_name_base + '2', gamma_regularizer=l2(l2_reg), beta_regularizer=l2(l2_reg))(x)
     x = Activation('relu')(x)
-    x = Convolution2D(filters, 3, 3, border_mode='same', name=conv_name_base + '2')(x)
+    x = Convolution2D(filters, 3, 3, border_mode='same', name=conv_name_base + '2', W_regularizer=l2(l2_reg))(x)
     
     return x
     
-def transition_block(input_tensor, filters, block):
+def transition_block(input_tensor, filters, compression, l2_reg, block):
     """
     # Arguments
         input_tensor: input tensor
         filters: number of filters for the convolutional layers
+        compression: output feature maps factor
+        l2_reg: regularizer factor
         block: '1','2'..., current transition label, used for generating layer names
     """
     if K.image_dim_ordering() == 'tf':
@@ -50,19 +54,21 @@ def transition_block(input_tensor, filters, block):
     conv_name_base = 'trans' + str(block) + '_conv'
     pool_name_base = 'trans' + str(block) + '_pool'
 
-    x = BatchNormalization(axis=bn_axis, name=bn_name_base)(input_tensor)
-    x = Convolution2D(filters, 1, 1, border_mode='same', name=conv_name_base)(x)
+    x = BatchNormalization(axis=bn_axis, name=bn_name_base, gamma_regularizer=l2(l2_reg), beta_regularizer=l2(l2_reg))(input_tensor)
+    x = Activation('relu')(x)
+    x = Convolution2D(int(filters * compression), 1, 1, border_mode='same', name=conv_name_base, W_regularizer=l2(l2_reg))(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name=pool_name_base)(x)
     
     return x
     
-def dense_block(input_tensor, nb_layers, nb_filter, growth_rate, block):
+def dense_block(input_tensor, nb_layers, nb_filter, growth_rate, l2_reg, block):
     """
     # Arguments
         input_tensor: input_tensor
         nb_layers: the number of layers of conv_block to append to the model.
         nb_filter: number of filters
         growth_rate: growth rate
+        l2_reg: regularizer factor
         block: '1','2'..., current transition label, used for generating layer names
     """
 
@@ -75,14 +81,14 @@ def dense_block(input_tensor, nb_layers, nb_filter, growth_rate, block):
     x = input_tensor
 
     for layer in range(nb_layers):
-        x = conv_block(x, growth_rate, block, layer)
+        x = conv_block(x, growth_rate, l2_reg, block, layer)
         feature_list.append(x)
         x = merge(feature_list, mode='concat', concat_axis=concat_axis)
         nb_filter += growth_rate
 
     return x, nb_filter
 
-def build_denseNet(img_shape=(3, 224, 224), n_classes=1000, n_layers=121, growth_rate=32, l2_reg=0.,
+def build_denseNet(img_shape=(3, 224, 224), n_classes=1000, depth=40, growth_rate=32, l2_reg=0.,
                 load_pretrained=False, freeze_layers_from=None):
     # Decide if load pretrained weights from imagenet
     if load_pretrained:
@@ -95,12 +101,12 @@ def build_denseNet(img_shape=(3, 224, 224), n_classes=1000, n_layers=121, growth
     else:
         concat_axis = 1
 
-    assert (n_layers - 4) % 3 == 0, 'Depth must be 3 N + 4'
-    
-    compression = 0.5
-
+    assert (depth - 4) % 3 == 0, 'Depth must be 3 N + 4'
     # layers in each dense block
-    nb_layers = int((n_layers - 4) / 3)
+    nb_layers = int((depth - 4) / 3)
+        
+    compression = 0.5
+    nb_blocks = 3
 
     # compute initial nb_filter if -1, else accept users initial nb_filter
     nb_filter = 2 * growth_rate
@@ -109,22 +115,26 @@ def build_denseNet(img_shape=(3, 224, 224), n_classes=1000, n_layers=121, growth
     model_input = Input(shape=img_shape)
 
     # Initial block
-    x = Convolution2D(nb_filter, 7, 7, border_mode='same', subsample=(2,2), name='initial_conv')(model_input)
-    x = MaxPooling2D((3, 3), strides=(2, 2), name='initial_pool')(x)
+    x = Convolution2D(nb_filter, 7, 7, border_mode='same', name='initial_conv', W_regularizer=l2(l2_reg))(model_input)
 
     # Add dense blocks
-    for block in range(4 - 1):
-        x, nb_filter = dense_block(x, nb_layers, nb_filter, growth_rate, block)
+    for block in range(1,nb_blocks):
+        x, nb_filter = dense_block(x, nb_layers, nb_filter, growth_rate, l2_reg, block)
         # add transition_block
-        x = transition_block(x, nb_filter, block)
+        x = transition_block(x, nb_filter, compression, l2_reg, block)
         nb_filter = int(nb_filter * compression)
 
     # The last dense_block does not have a transition_block
-    x, nb_filter = dense_block(x, nb_layers, nb_filter, growth_rate, 4)
-    x = GlobalAveragePooling2D()(x)
-    x = Dense(n_classes, activation='softmax')(x)
+    x, nb_filter = dense_block(x, nb_layers, nb_filter, growth_rate, l2_reg, nb_blocks)
+    
+    base_model = Model(input=model_input, output=x)
+    
+    # Classification block
+    y = base_model.output
+    y = GlobalAveragePooling2D()(y)
+    predictions = Dense(n_classes, activation='softmax')(y)
 
-    model = Model(input=model_input, output=x)
+    model = Model(input=base_model.input, output=predictions)
 
     # Freeze some layers
     if freeze_layers_from is not None:
@@ -140,7 +150,5 @@ def build_denseNet(img_shape=(3, 224, 224), n_classes=1000, n_layers=121, growth
                layer.trainable = False
             for layer in model.layers[freeze_layers_from:]:
                layer.trainable = True
-               
-    model.summary()
 
     return model
