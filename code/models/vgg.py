@@ -30,12 +30,12 @@ def build_vgg(img_shape=(3, 224, 224), n_classes=1000, n_layers=16, l2_reg=0.,
     # Add final layers
     x = base_model.output
     x = Flatten(name="flatten")(x)
-    x = Dense(4096, activation='relu', name='dense_1')(x)
+    x = Dense(4096, activation='relu', name='dense_1bis')(x)
     x = Dropout(0.5)(x)
-    x = Dense(4096, activation='relu', name='dense_2')(x)
+    x = Dense(4096, activation='relu', name='dense_2bis')(x)
     x = Dropout(0.5)(x)
-    x = Dense(n_classes, name='dense_3')(x)
-    predictions = Activation("softmax", name="softmax")(x)
+    x = Dense(n_classes, name='dense_3bis')(x)
+    predictions = Activation("softmax", name="softmax_bis")(x)
 
     # This is the model we will train
     model = Model(input=base_model.input, output=predictions)
