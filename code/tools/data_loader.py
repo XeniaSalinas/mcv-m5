@@ -7,6 +7,7 @@ from skimage.color import rgb2gray, gray2rgb
 import skimage.transform
 import numpy as np
 from numpy import ma
+from numpy import linalg
 from numpy.linalg import inv
 from six.moves import range
 import os

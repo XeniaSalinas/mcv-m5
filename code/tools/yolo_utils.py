@@ -1,5 +1,6 @@
 import numpy as np
 import warnings
+import cv2
 
 """ YOLO regions utilities """
 
