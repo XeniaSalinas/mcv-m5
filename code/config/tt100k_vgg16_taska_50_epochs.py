@@ -1,20 +1,20 @@
 # Dataset
 problem_type                 = 'classification'# ['classification' | 'detection' | 'segmentation']
-dataset_name                 = 'BelgiumTSC'    # Dataset name
+dataset_name                 = 'TT100K_trafficSigns'# Dataset name
 dataset_name2                = None            # Second dataset name. None if not Domain Adaptation
 perc_mb2                     = None            # Percentage of data from the second dataset in each minibatch
 
 # Model
-model_name                   = 'vgg16'         # Model to use ['fcn8' | 'lenet' | 'alexNet' | 'vgg16' |  'vgg19' | 'resnet50' | 'InceptionV3']
-freeze_layers_from           = 'base_model'    # Freeze layers from 0 to this layer during training (Useful for finetunning) [None | 'base_model' | Layer_id]
+model_name                   = 'vgg16'          # Model to use ['fcn8' | 'lenet' | 'alexNet' | 'vgg16' |  'vgg19' | 'resnet50' | 'InceptionV3']
+freeze_layers_from           = None            # Freeze layers from 0 to this layer during training (Useful for finetunning) [None | 'base_model' | Layer_id]
 show_model                   = False           # Show the architecture layers
 load_imageNet                = False           # Load Imagenet weights and normalize following imagenet procedure
-load_pretrained              = True             # Load a pretrained model for doing finetuning
+load_pretrained              = False           # Load a pretrained model for doing finetuning
 weights_file                 = 'weights.hdf5'  # Training weight file name
 
 # Parameters
 train_model                  = True            # Train the model
-test_model                   = True            # Test the model
+test_model                   = True           # Test the model
 pred_model                   = False           # Predict using the model
 
 # Debug
@@ -78,11 +78,11 @@ plotHist_verbose             = 0               # Verbosity of the callback
 norm_imageNet_preprocess           = False     # Normalize following imagenet procedure
 norm_fit_dataset                   = True      # If True it recompute std and mean from images. Either it uses the std and mean set at the dataset config file
 norm_rescale                       = 1/255.    # Scalar to divide and set range 0-1
-norm_featurewise_center            = True      # Substract mean - dataset
-norm_featurewise_std_normalization = True      # Divide std - dataset
-norm_samplewise_center             = False     # Substract mean - sample
-norm_samplewise_std_normalization  = False     # Divide std - sample
-norm_gcn                           = False     # Global contrast normalization
+norm_featurewise_center            = False     # Substract mean - dataset
+norm_featurewise_std_normalization = False     # Divide std - dataset
+norm_samplewise_center             = True      # Substract mean - sample
+norm_samplewise_std_normalization  = True      # Divide std - sample
+norm_gcn                           = False      # Global contrast normalization
 norm_zca_whitening                 = False     # Apply ZCA whitening
 cb_weights_method                  = None      # Label weight balance [None | 'median_freq_cost' | 'rare_freq_cost']
 

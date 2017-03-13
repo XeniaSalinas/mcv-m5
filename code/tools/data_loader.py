@@ -7,6 +7,7 @@ from skimage.color import rgb2gray, gray2rgb
 import skimage.transform
 import numpy as np
 from numpy import ma
+from numpy import linalg
 from numpy.linalg import inv
 from six.moves import range
 import os
@@ -638,6 +639,9 @@ class ImageDataGenerator(object):
             # reject regions that are too small
             y = y[y[:,3]>0.005]
             y = y[y[:,4]>0.005]
+            if y.shape[0] == 0:
+                warnings.warn('DirectoryIterator: your data augmentation strategy '
+                              'is is moving all the boxes out of the image ')
 
         # TODO:
         # channel-wise normalization
@@ -983,7 +987,7 @@ class DirectoryIterator(Iterator):
                 y = y[((y[:,2] > 0.) & (y[:,2] < 1.))]
                 y = y[((y[:,3] > 0.) & (y[:,3] < 1.))]
                 y = y[((y[:,4] > 0.) & (y[:,4] < 1.))]
-                if (y.shape != gt.shape):
+                if (y.shape != gt.shape) or (y.shape[0] == 0):
                     warnings.warn('DirectoryIterator: found an invalid annotation '
                                   'on GT file '+label_path)
                 # shuffle gt boxes order
@@ -1042,9 +1046,9 @@ class DirectoryIterator(Iterator):
             for i, label in enumerate(self.classes[index_array]):
                 batch_y[i, label] = 1.
         elif self.class_mode == 'detection':
+            # TODO detection: check model, other networks may expect a different batch_y format and shape
             # YOLOLoss expects a particular batch_y format and shape
-            batch_y = yolo_build_gt_batch(batch_y, self.image_shape) 
-            # TODO other detection networks may expect a different batch_y format and shape
+            batch_y = yolo_build_gt_batch(batch_y, self.image_shape, self.nb_class)
         elif self.class_mode == None:
             return batch_x
 
