@@ -1,20 +1,20 @@
 # Dataset
 problem_type                 = 'classification'# ['classification' | 'detection' | 'segmentation']
-dataset_name                 = 'KITTI'# Dataset name
+dataset_name                 = 'KITTI'         # Dataset name
 dataset_name2                = None            # Second dataset name. None if not Domain Adaptation
 perc_mb2                     = None            # Percentage of data from the second dataset in each minibatch
 
 # Model
 model_name                   = 'vgg16'          # Model to use ['fcn8' | 'lenet' | 'alexNet' | 'vgg16' |  'vgg19' | 'resnet50' | 'InceptionV3']
 freeze_layers_from           = None            # Freeze layers from 0 to this layer during training (Useful for finetunning) [None | 'base_model' | Layer_id]
-show_model                   = False           # Show the architecture layers
+show_model                   = True           # Show the architecture layers
 load_imageNet                = False           # Load Imagenet weights and normalize following imagenet procedure
 load_pretrained              = False           # Load a pretrained model for doing finetuning
 weights_file                 = 'weights.hdf5'  # Training weight file name
 
 # Parameters
 train_model                  = True            # Train the model
-test_model                   = True           # Test the model
+test_model                   = False           # Test the model
 pred_model                   = False           # Predict using the model
 
 # Debug
@@ -45,7 +45,7 @@ seed_test                    = 1924            # Random seed for the testing shu
 
 # Training parameters
 optimizer                    = 'rmsprop'       # Optimizer
-learning_rate                = 0.0001          # Training learning rate
+learning_rate                = 0.00001         # Training learning rate
 weight_decay                 = 0.              # Weight decay or L2 parameter norm penalty
 n_epochs                     = 50              # Number of epochs during training
 
@@ -56,10 +56,10 @@ save_results_batch_size      = 5               # Size of the batch
 save_results_n_legend_rows   = 1               # Number of rows when showwing the legend
 
 # Callback early stoping
-earlyStopping_enabled        = True            # Enable the Callback
+earlyStopping_enabled        = False            # Enable the Callback
 earlyStopping_monitor        = 'acc'           # Metric to monitor
 earlyStopping_mode           = 'max'           # Mode ['max' | 'min']
-earlyStopping_patience       = 100             # Max patience for the early stopping
+earlyStopping_patience       = 30              # Max patience for the early stopping
 earlyStopping_verbose        = 0               # Verbosity of the early stopping
 
 # Callback model check point
@@ -73,6 +73,8 @@ checkpoint_verbose           = 0               # Verbosity of the checkpoint
 # Callback plot
 plotHist_enabled             = True            # Enable the Callback
 plotHist_verbose             = 0               # Verbosity of the callback
+
+lrDecayScheduler_enabled = False
 
 # Data augmentation for training and normalization
 norm_imageNet_preprocess           = False     # Normalize following imagenet procedure
