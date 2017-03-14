@@ -87,3 +87,5 @@ If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEV
 ## Results
 
 The summary of week 2 results can be found in this [link](https://docs.google.com/presentation/d/18LAQ4oPBahXFwfIXP-z77KeSHZ3ZdCD9sSPX-1ivDng/edit?usp=sharing)		
+
+The weights resulting of our experiments can be found in this [link](https://drive.google.com/drive/folders/0B2fYuDqzasf7TU04SFpfNTh2dzA)
