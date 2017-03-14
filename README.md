@@ -31,10 +31,46 @@ The first stage of this project is based on object recognition. We aim to classi
  - 	Train the VGG16 on TT100K dataset using data augmentation.
  
 ## Contributions 
-- Adaptation of ResNet network model to the framework in `code/models/resNet.py`
-- Adaptation of InceptionV3 network model to the framework in `code/models/inceptionV3.py`
-- Implementation from scratch of DenseNet model in `code/models/denseNet.py`
+- Adaptation of ResNet network model provided by Keras to the framework in `code/models/resNet.py`
+- Adaptation of InceptionV3 network model provided by Keras to the framework in `code/models/inceptionV3.py`
+- Implementation from scratch of DenseNet network model in `code/models/denseNet.py`
 
+## Usage
+
+For running this commands, please locate in folder `mcv-m5/code`.
+If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEVICES=0`
+In general, for running the code use `python train.py -c config/config_file_name.py -e experiment_name` where `config_file_name` is your config file and `experiment_name` is the folder name where your experiment is going to be saved. 
+
+- VGG16
+
+	- TT100K Dataset:
+		- Train from scratch: `python train.py -c ./config/classification/tt100k_vgg16_scratch.py -e tt100k_vgg16_scratch`
+		- Fine tuning: `python train.py -c ./config/classification/tt100k_vgg16_finetuning.py -e tt100k_vgg16_finetuning`
+	
+	- Belgium Dataset
+		- Transfer Learning: `python train.py -c ./config/classification/belgium_vgg_taska.py -e belgium_vgg_taska`
+		
+	- KITTI Dataset
+		- Train from scratch: `python train.py -c ./config/classification/kitti_vgg16_taskB_scratch.py -e kitti_vgg16_taskB_scratch`
+		- Fine tuning: `python train.py -c ./config/classification/kitti_vgg16_taskB_finetuning.py -e kitti_vgg16_taskB_finetuning`
+		
+- ResNet
+	
+	- TT100K Dataset:
+		- Train from scratch: `python train.py -c ./config/classification/***.py -e ***`
+		- Fine tuning: `python train.py -c ./config/classification/***.py -e ***`
+		
+- InceptionV3
+
+	- TT100K Dataset:
+		- Train from scratch: `python train.py -c ./config/classification/tt100k_inception_taskd_1.py -e tt100k_inception_taskd_1`
+		- Fine tuning: `python train.py -c ./config/classification/tt100k_inception_taskd_finetuning.py -e tt100k_inception_taskd_finetuning`
+
+- DenseNet
+
+	- TT100K Dataset:
+		- Train from scratch: `python train.py -c ./config/classification/tt100k_denseNet_taskD_scratch.py -e tt100k_denseNet_taskD_scratch`
+		
 ## Documentation
  - Report in Overleaf [link](https://www.overleaf.com/read/dndkxjrdrrzb)
  - Presentation in Google Slides [link](https://docs.google.com/presentation/d/172037oHvwqqKpi6Bd6sYmrkcISgEO9Ft_OU5IjWsbkY/edit?usp=sharing)
