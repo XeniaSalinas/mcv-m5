@@ -69,8 +69,8 @@ If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEV
 - ResNet
 	
 	- TT100K Dataset:
-		- Train from scratch: `python train.py -c ./config/classification/***.py -e ***`
-		- Fine tuning: `python train.py -c ./config/classification/***.py -e ***`
+		- Train from scratch: `python train.py -c ./config/classification/tt100k_resnet_scratch.py -e tt100k_resnet_scratch`
+		- Fine tuning: `python train.py -c ./config/classification/tt100k_resnet_finetuning.py -e tt100k_resnet_finetuning`
 		
 - InceptionV3
 
@@ -86,4 +86,4 @@ If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEV
 
 ## Results
 
-The summary of week 2 results can be found in this [Google Slides](https://docs.google.com/presentation/d/18LAQ4oPBahXFwfIXP-z77KeSHZ3ZdCD9sSPX-1ivDng/edit?usp=sharing)		
+The summary of week 2 results can be found in this [link](https://docs.google.com/presentation/d/18LAQ4oPBahXFwfIXP-z77KeSHZ3ZdCD9sSPX-1ivDng/edit?usp=sharing)		
