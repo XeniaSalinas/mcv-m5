@@ -38,8 +38,11 @@ The first stage of this project is based on object recognition. We aim to classi
 ## Usage
 
 For running this commands, please locate in folder `mcv-m5/code`.
-If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEVICES=0`
+
 In general, for running the code use `python train.py -c config/config_file_name.py -e experiment_name` where `config_file_name` is your config file and `experiment_name` is the folder name where your experiment is going to be saved. 
+
+If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEVICES=0`.
+
 
 - VGG16
 
