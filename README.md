@@ -30,6 +30,11 @@ The first stage of this project is based on object recognition. We aim to classi
 ### Boost the performance
  - 	Train the VGG16 on TT100K dataset using data augmentation.
  
+## Contributions 
+- Adaptation of ResNet network model to the framework in `code/models/resNet.py`
+- Adaptation of InceptionV3 network model to the framework in `code/models/inceptionV3.py`
+- Implementation from scratch of DenseNet model in `code/models/denseNet.py`
+
 ## Documentation
  - Report in Overleaf [link](https://www.overleaf.com/read/dndkxjrdrrzb)
  - Presentation in Google Slides [link](https://docs.google.com/presentation/d/172037oHvwqqKpi6Bd6sYmrkcISgEO9Ft_OU5IjWsbkY/edit?usp=sharing)
