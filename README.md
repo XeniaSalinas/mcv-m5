@@ -7,12 +7,21 @@
  - Xian López Álvarez: [xianlopez](https://github.com/xianlopez) - <lopezalvarez.xian@gmail.com>
  - Xènia Salinas Ventalló: [XeniaSalinas](https://github.com/XeniaSalinas) - <salinasxenia@gmail.com>
 
-# Scope
+## Scope
 This project aims to design and implement deep neural networks 
 for scene understanding for autonomous vehicles.
 The first stage of this project is based on object recognition. We aim to classify traffic signals according to its meaning and secene crops depending on the correspondance to a pedestrains, cyclist or vehicles.
 
-## Goals of Week2
+## Documentation
+ - Report in Overleaf [link](https://www.overleaf.com/read/dndkxjrdrrzb)
+ - Presentation in Google Slides [link](https://docs.google.com/presentation/d/172037oHvwqqKpi6Bd6sYmrkcISgEO9Ft_OU5IjWsbkY/edit?usp=sharing)
+ - Reference papers summaries [link](https://github.com/XeniaSalinas/mcv-m5/blob/master/summaries.md)
+ - Experiments results [link](https://drive.google.com/drive/folders/0B2fYuDqzasf7TU04SFpfNTh2dzA)
+
+# Week2
+
+## Goals
+
 ### VGG16
 - Train from scratch a VGG16 network using TT100K dataset.
 - Data transfer learning on the Belgium Dataset:
@@ -74,8 +83,7 @@ If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEV
 	- TT100K Dataset:
 		- Train from scratch: `python train.py -c ./config/classification/tt100k_denseNet_taskD_scratch.py -e tt100k_denseNet_taskD_scratch`
 		
-## Documentation
- - Report in Overleaf [link](https://www.overleaf.com/read/dndkxjrdrrzb)
- - Presentation in Google Slides [link](https://docs.google.com/presentation/d/172037oHvwqqKpi6Bd6sYmrkcISgEO9Ft_OU5IjWsbkY/edit?usp=sharing)
- - Reference papers summaries [link](https://github.com/XeniaSalinas/mcv-m5/blob/master/summaries.md)
- - Experiments results [link](https://drive.google.com/drive/folders/0B2fYuDqzasf7TU04SFpfNTh2dzA)
+
+## Results
+
+The summary of week 2 results can be found in this [Google Slides](https://docs.google.com/presentation/d/18LAQ4oPBahXFwfIXP-z77KeSHZ3ZdCD9sSPX-1ivDng/edit?usp=sharing)		
