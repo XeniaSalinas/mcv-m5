@@ -7,7 +7,7 @@ from keras.layers import MaxPooling2D
 from keras.layers import LeakyReLU
 from keras.layers import merge
 from keras.layers import Reshape
-from layers.yolo_layers import YOLOConvolution2D,Reorg
+from code.layers.yolo_layers import YOLOConvolution2D,Reorg
 
 def build_yolo(img_shape=(3, 416, 416), n_classes=80, n_priors=5,
                load_pretrained=False,freeze_layers_from='base_model',
