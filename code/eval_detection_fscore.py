@@ -11,6 +11,7 @@ from models.yolo import build_yolo
 from tools.yolo_utils import *
 
 # Net output post-processing needs two parameters:
+tiny_yolo = True #Set to true if the model is a tiny-yolo
 detection_threshold = 0.6 # Min probablity for a prediction to be considered
 nms_threshold       = 0.2 # Non Maximum Suppression threshold
 # IMPORTANT: the values of these two params will affect the final performance of the netwrok
@@ -27,7 +28,9 @@ input_shape = (3, 320, 320)
 NUM_PRIORS  = len(priors)
 NUM_CLASSES = len(classes)
 
-model = build_yolo(img_shape=input_shape,n_classes=NUM_CLASSES)
+model = build_yolo(img_shape=input_shape,n_classes=NUM_CLASSES, n_priors=5,
+               load_pretrained=False,freeze_layers_from='base_model',
+               tiny=tiny_yolo)
 model.load_weights(sys.argv[1])
 
 
