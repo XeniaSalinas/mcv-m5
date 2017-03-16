@@ -1,3 +1,5 @@
+# Classification
+
 ## [Very Deep Convolutional Networks for Large-Scale Image Recognition](https://arxiv.org/pdf/1409.1556.pdf)
 ### Authors: Karen Simonyan & Andrew Zisserman
 
@@ -16,8 +18,6 @@ At testing time, the test image is scaled using scale size not necessarily equal
 
 Experiments were evaluated using top-1 val. error and top-5 val. error. The better classifications results are using multi-crop and dense evaluation, as multi-crop results in a finer sampling of the input image compared to the fully convolutional net, and dense means the padding is done using the neighbor pixels instead of zeros. But in practice, the increased computation time using multi-crops does not provide potential gains in accuracy compared with multi-scale evaluation (test image over several rescale versions).  Posterior experiments showed that combining the output of several models by averaging their soft-max class posteriors increased slightly the accuracy.
 
-
-
 ## [Deep Residual Learning for Image Recognition](https://arxiv.org/pdf/1512.03385.pdf)
 ### Authors: Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
 
@@ -34,3 +34,28 @@ The next experiment was to validate 18-layer and 34-layer residual nets with ide
 The effect of the projection shortcuts is analized using three different configurations. It was shown that the configuration that uses some projection shortcuts to increase dimensions and identity shortcuts for not to increase the complexity is the best one.
 
 The net presented on ImageNet 2012 was a deep bottleneck architecture of the previous 34-layer residual net. The identity shortcuts are added every 3 layer instead of 2. The bottleneck model is a stack of 1x1, 3x3 and 1x1 convolutions. In a 50-layer ResNet, the 2-layer blocks are replaced with the bottleneck configuration adding a total of 50 layers. The 101-layer and 152-layer models are constructed using extra layers in the 3-layer blocks. The results showed that the 50/101/152-layer networks are more accurate than the 34-layer residual networks and have lowe complexity than VGG-16/19 ntes.
+
+
+# Detection
+
+## [You Only Look Once: Unified, Real-Time Object Detection](https://arxiv.org/pdf/1506.02640.pdf)
+### Authors: Joseph Redmon, Santosh Divvala, Ross Girshick, Ali Farhadi
+
+### Summary
+This paper presents a new approach to object detection where a single neural network predicts bounding boxes and class probabilities directly from full images in one evaluation.
+
+All the previous systems take a classifier for an object and evaluate it at different locations and scales in the image. These pipelines are slow and hard to optimize because each component must be trained separately. YOLO formulates detection as a regression problem, for that it uses a single convolutional network that predicts the bounding box and the class at the same time, this model has some benefits over the previous systems. The first benefit is that is extremely faster, the network runs at 45 fps on a Titan X GPU and at 150 fps with the Fast YOLO while Faster R-CNN is 2.5 times slower. The second benefit is that YOLO has a global image perception making a reduction on the background errors, specifically it is reduced to less than a half compared to Fast R-CNN. The third benefit is that YOLO learns generalizable representations of objects, so the probability of breaking down on new domains is reduced. Another benefit is that this system enables end-to-end training and real time speed. Despite this benefits it also has some limitations. The number of nearby objects that it can predict is limited cause of the strong spatial constraints that YOLO imposes. Another limitation is that it uses coarse features to predict bounding boxes since it contains multiple down-sampling layers. Finally, the loss function equally treats errors is small and large bounding boxes.
+
+The system divides the image into a SxS grid and assigns the responsibility of detecting an object to the grid cell in which falls the center of that object. Thus, each grid cell predicts B bounding boxes (center coordinates respect to the grid cell bounds and width and height relative to the whole image) and the confidence scores (Pr(Object) * IOU between the predicted box and the ground truth) for each one. Moreover, each grid cell predicts C conditional class probabilities, Pr(Class_i|Object). Multiplying the conditional class probability and the individual box confidence prediction they obtain the class-specific confidence score for each box.
+
+The YOLO arquitecture is composed by 24 convolutional layers followed by 2 fully connected layers. It uses 1x1 convolutional layers to reduce the number of features followed by 3x3 convolutional layers. For the Fast YOLO version, they reduce to 9 the number of convolutional layers an also the number of filter in those layers. The output is a 7x7x30 predictions tensor.
+
+They first pretrained the convolutional layers on ImageNet using the first 20 convolutional layers followed by an average-pooling and a fully connected layer. Then they fine-tunned the whole network optimizing the sum-squared error in the output, to deal with the grid cells that do not contain any object they introduced to parameters that increase the loss from bounding box coordinate predictions and decrease the loss from confidence predictions. They trained the network for 135 epochs using a batch size of 64, a momentum of 0.9 and a decay of o.0005. The learning rate slowly raise from 10^-3 to 10^-2, the it is maintained during 75 epochs, after that it is reduced to 10^-3 for 30 epochs and finally to 10^-4 for 30 epochs. They also used dorpout with a 0.5 rate and an expensive data augmentation based on scales, translation and exposure and saturation adjustments.
+
+On the inference step it predicts 98 bounding boxes per image in a single network evaluation. Often is predicts only one box for each object, but for the cases in which it predicts multiple boxes they apply the non-maximal suppression algorithm.
+
+Comparing the results with other real-time systems they saw that Fast YOLO was the fastest object detection method and that with a 52.7% mAP they doubled the accuracy of prior real-time systems. YOLO obtained 63.4% mAP and had real-time performance.
+
+Comparing the results with Fast R-CNN they saw that the most common error in YOLO was localization error while on Fast R-CNN they had three time the probability to predict background detections. They also developed a combination of Fast R-CNN and YOLO where YOLO system eliminates the background detections from Fast R-CNN. With this combination, they achieved a 3.2 gain over the Fast R-CNN getting a 75.0% mAP on the VOC 2007 test set.
+
+On VOC 2012 test set YOLO scores 57.9% mAP, lower than the other state of the art systems. The combined system (Fast R-CNN + YOLO) is one of the highest performing detection. Finally, they analyzed the generalizability of the system testing person detection on artwork, they could see that its AP degrades less than other methods, from 59.2% on VOC 2007 to 53.3% on Picasso dataset or 45% on People-Art.
