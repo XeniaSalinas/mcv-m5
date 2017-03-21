@@ -13,7 +13,7 @@ import numpy as np
 def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
 
     # Get base model
-    base_model = VGG16(include_top=False, weights=weights,
+    base_model = VGG16(include_top=False, weights='imagenet',
                        input_tensor=None, input_shape=img_shape)
     
     # Build the training model:
@@ -27,7 +27,7 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
     print 'nclasses = ', n_classes
     
     # Get the layes of the new dense layer:
-    model_train.load_weights('/home/master/m5_project/code/weights/weights_vgggap.hdf5')
+    model_train.load_weights('/home/xianlopez/Documents/myvenv1/tt100k_vggGAP/weights.hdf5')
     weights_dense = dense_layer.get_weights()
     print 'weights_dense.__class__.__name__ = ' + weights_dense.__class__.__name__
     print 'len(weights_dense) = ' + str(len(weights_dense))
@@ -43,10 +43,10 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
 #    print 'weights[0].shape = ' + str(weights[0].shape)
 #    print 'weights[1].shape = ' + str(weights[1].shape)
     
-    weights_forcam = weights_dense[0].reshape((1, 1, 512, 8))
+    weights_forcam = weights_dense[0].reshape((1, 1, 512, n_classes))
     print 'weights_forcam.shape = ' + str(weights_forcam.shape)
     
-    bias_forcam = np.zeros((8,), dtype = np.float32)
+    bias_forcam = np.zeros((n_classes,), dtype = np.float32)
     print 'bias_forcam.shape = ' + str(bias_forcam.shape)
     print 'bias_forcam.dtype = ' + str(bias_forcam.dtype)
     
