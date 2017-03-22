@@ -13,8 +13,8 @@ from keras.layers import merge
 from keras.layers import Reshape
 from keras.layers import ZeroPadding2D
 from keras.models import Model
-from code.layers.ssd_layers import Normalize
-from code.layers.ssd_layers import PriorBox
+from layers.ssd_layers import Normalize
+from layers.ssd_layers import PriorBox
 
 def SSD(input_shape, num_classes):
     """SSD300 architecture.
@@ -140,7 +140,7 @@ def SSD(input_shape, num_classes):
     name = 'conv4_3_norm_mbox_conf'
     name += '_{}'.format(num_classes)
     
-	x = Convolution2D(num_priors * num_classes, 3, 3, border_mode='same',
+    x = Convolution2D(num_priors * num_classes, 3, 3, border_mode='same',
                       name=name)(net['conv4_3_norm'])
     net['conv4_3_norm_mbox_conf'] = x
     flatten = Flatten(name='conv4_3_norm_mbox_conf_flat')
@@ -295,8 +295,8 @@ def build_ssd(img_shape=(3, 300, 300), n_classes=80,
     model = []
 
     # Get base model
-     model = SSD(input_shape=img_shape, num_classes=n_classes)
-      base_model_layers = [layer.name for layer in model.layers[0:42]]
+    model = SSD(input_shape=img_shape, num_classes=n_classes)
+    base_model_layers = [layer.name for layer in model.layers[0:42]]
     
     if load_pretrained:
       # Rename last layer to not load pretrained weights
