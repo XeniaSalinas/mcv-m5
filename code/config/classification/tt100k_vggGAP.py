@@ -14,7 +14,7 @@ weights_file                 = 'weights.hdf5'  # Training weight file name
 
 # Parameters
 train_model                  = True            # Train the model
-test_model                   = False           # Test the model
+test_model                   = True           # Test the model
 pred_model                   = False           # Predict using the model
 
 # Debug
@@ -47,7 +47,7 @@ seed_test                    = 1924            # Random seed for the testing shu
 optimizer                    = 'rmsprop'       # Optimizer
 learning_rate                = 0.0001          # Training learning rate
 weight_decay                 = 0.              # Weight decay or L2 parameter norm penalty
-n_epochs                     = 50              # Number of epochs during training
+n_epochs                     = 60              # Number of epochs during training
 
 # Callback save results
 save_results_enabled         = False           # Enable the Callback
@@ -73,6 +73,11 @@ checkpoint_verbose           = 0               # Verbosity of the checkpoint
 # Callback plot
 plotHist_enabled             = True            # Enable the Callback
 plotHist_verbose             = 0               # Verbosity of the callback
+
+# Callback LR decay scheduler
+lrDecayScheduler_enabled     = True           # Enable the Callback
+lrDecayScheduler_epochs      = [40, 50]     # List of epochs were decay is applied or None for all epochs
+lrDecayScheduler_rate        = 2               # Decay rate (new_lr = lr / decay_rate). Usually between 2 and 10.
 
 # Data augmentation for training and normalization
 norm_imageNet_preprocess           = True     # Normalize following imagenet procedure
