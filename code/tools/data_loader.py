@@ -25,6 +25,7 @@ from keras.preprocessing.image import (Iterator,
 
 from tools.save_images import save_img2
 from tools.yolo_utils import yolo_build_gt_batch
+from tools.ssd_utils import ssd_build_gt_batch
 
 # Pad image
 def pad_image(x, pad_amount, mode='reflect', constant=0.):
@@ -1048,7 +1049,15 @@ class DirectoryIterator(Iterator):
         elif self.class_mode == 'detection':
             # TODO detection: check model, other networks may expect a different batch_y format and shape
             # YOLOLoss expects a particular batch_y format and shape
-            batch_y = yolo_build_gt_batch(batch_y, self.image_shape, self.nb_class)
+            """
+            if self.model_name in ['yolo','tiny-yolo']:
+                batch_y = yolo_build_gt_batch(batch_y, self.image_shape, self.nb_class)
+            elif self.model_name == 'ssd':
+                batch_y = ssd_build_gt_batch(batch_y, self.image_shape, self.nb_class)
+            else:
+                raise ValueError('Unknown model')
+            """
+            batch_y = ssd_build_gt_batch(batch_y, self.image_shape, self.nb_class)
         elif self.class_mode == None:
             return batch_x
 

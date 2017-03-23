@@ -108,6 +108,7 @@ class One_Net_Model(Model):
         if self.cf.test_model:
             print('\n > Testing the model...')
             # Load best trained model
+            print('   loading model weights from: ' + self.cf.weights_test_file + '...')
             self.model.load_weights(self.cf.weights_test_file)
 
             # Evaluate model

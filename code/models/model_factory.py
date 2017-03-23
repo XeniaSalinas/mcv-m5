@@ -52,15 +52,24 @@ class Model_Factory():
             loss = 'categorical_crossentropy'
             metrics = ['accuracy']
         elif cf.dataset.class_mode == 'detection':
-            in_shape = (cf.dataset.n_channels,
+            if cf.model_name in ['yolo', 'tiny-yolo']:
+                in_shape = (cf.dataset.n_channels,
                         cf.target_size_train[0],
                         cf.target_size_train[1])
-            if cf.model_name in ['yolo', 'tiny-yolo']:
                 loss = YOLOLoss(in_shape, cf.dataset.n_classes, cf.dataset.priors)
                 metrics = [YOLOMetrics(in_shape, cf.dataset.n_classes, cf.dataset.priors)]
             elif cf.model_name == 'ssd':
+                if K.image_dim_ordering() == 'th':
+                    in_shape = (cf.dataset.n_channels,
+                                cf.target_size_train[0],
+                                cf.target_size_train[1])
+                else:
+                    in_shape = (cf.target_size_train[0],
+                                cf.target_size_train[1],
+                                cf.dataset.n_channels)
                 loss = SSDLoss(in_shape, cf.dataset.n_classes, cf.dataset.priors)
-                metrics = [SSDMetrics(in_shape, cf.dataset.n_classes, cf.dataset.priors)]
+                #metrics = [SSDMetrics(in_shape, cf.dataset.n_classes, cf.dataset.priors)]
+                metrics = []
             else:
                 raise ValueError('Unknown model')
         elif cf.dataset.class_mode == 'segmentation':
