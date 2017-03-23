@@ -24,6 +24,7 @@ def image2bboxes(model, image, percent):
         idx_bbox += 1
         # Get the bounding box for the current class:
         bboxes[idx_bbox,:] = heatmap2bbox(heatmaps[0,:,:,idx_class], percent)
+        print 'bbox = ' + str(bboxes[idx_bbox,:])
     return bboxes
         
     
@@ -49,35 +50,45 @@ def get_top_5_classes(heatmaps):
 
 def heatmap2bbox(heatmap, percent):
     # Compute the threshold from the percentage and the heatmap:
-    #######     TODO
+    threshold = np.percentile(heatmap.flatten(), percent)
+    print 'min(heatmap) = ' + str(np.min(heatmap.flatten()))
+    print 'max(heatmap) = ' + str(np.max(heatmap.flatten()))
+    print 'threshold = ' + str(threshold)
     # Here the heatmap is an array of only two dimensions (the spatial dimensions)
     mask = heatmap > threshold
+    print mask
     # Connected components labeling:
     regions, nregions = label(mask, 8, return_num=True)
     print 'regions.__class__.__name__ = ' + regions.__class__.__name__
     print 'regions.shape = ' + str(regions.shape)
     print 'nregions = ' + str(nregions)
+    print regions
     if nregions > 0:
         # Keep only the biggest region:
         biggest_region = -1
         biggest_area = 0
-        for i in range(nregions):
+        # We are discarding region 0, wich corresponds to background
+        for i in range(1,nregions+1):
+            print i
             current_area = sum(sum(regions == i))
             if current_area > biggest_area:
                 biggest_area = current_area
                 biggest_region = i
+        print 'biggest area = ' + str(biggest_area)
         # Arrays with coordinates of biggest region::
         x_idxs = np.zeros(biggest_area)
         y_idxs = np.zeros(biggest_area)
         count = -1
-        for i in regions.shape[0]:
-            for j in regions.shape[1]:
+        for i in range(regions.shape[0]):
+            for j in range(regions.shape[1]):
                 if regions[i,j] == biggest_region:
                     count += 1
                     x_idxs[count] = j
                     y_idxs[count] = i
         # Corners of the bounding box enclosing the biggest region:
         # top left corner:
+        print 'x_idxs = ' + str(x_idxs)
+        print 'y_idxs = ' + str(y_idxs)
         x = np.min(x_idxs)
         y = np.min(y_idxs)
         # height and width:
