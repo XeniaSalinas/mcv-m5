@@ -5,6 +5,10 @@ from keras.engine.training import GeneratorEnqueuer
 #from model_factory import Model_Factory
 from tools.save_images import save_img3
 
+from tools.ssd_utils import SSD_Generator
+from tools.ssd_utils import BBoxUtility
+import pickle
+
 
 """
 Interface for normal (one net) models and adversarial models. Objects of
@@ -40,17 +44,36 @@ class One_Net_Model(Model):
     def train(self, train_gen, valid_gen, cb):
         if (self.cf.train_model):
             print('\n > Training the model...')
-            hist = self.model.fit_generator(generator=train_gen,
-                                            samples_per_epoch=self.cf.dataset.n_images_train,
-                                            nb_epoch=self.cf.n_epochs,
+#            hist = self.model.fit_generator(generator=train_gen,
+#                                            samples_per_epoch=self.cf.dataset.n_images_train,
+#                                            nb_epoch=self.cf.n_epochs,
+#                                            verbose=1,
+#                                            callbacks=cb,
+#                                            validation_data=valid_gen,
+#                                            nb_val_samples=self.cf.dataset.n_images_valid,
+#                                            class_weight=None,
+#                                            max_q_size=10,
+#                                            nb_worker=1,
+#                                            pickle_safe=False)
+            # >>>> changed for SSD:
+            priors = pickle.load(open('prior_boxes_ssd300.pkl', 'rb'))
+            bbox_util = BBoxUtility(self.cf.dataset.n_classes, priors)
+            path_prefix = self.cf.dataset_path
+            # Las "keys" creo que son los nombres de las imágenes:
+            train_keys = ['23_0', '43_0', '60_5', '92_8', '181_5']
+            val_keys = ['47182_0', '75838_0', '84651_0', '463_0']
+            gen = SSD_Generator(gt, bbox_util, 16, path_prefix,
+                train_keys, val_keys,
+                (input_shape[0], input_shape[1]), do_crop=False)
+            hist = self.model.fit_generator(generator=gen.generate(True),
+                                            steps_per_epoch=gen.train_batches,
+                                            epochs=self.cf.n_epochs, 
                                             verbose=1,
                                             callbacks=cb,
-                                            validation_data=valid_gen,
-                                            nb_val_samples=self.cf.dataset.n_images_valid,
-                                            class_weight=None,
-                                            max_q_size=10,
-                                            nb_worker=1,
-                                            pickle_safe=False)
+                                            validation_data=gen.generate(False),
+                                            nb_val_samples=gen.val_batches,
+                                            nb_worker=1)
+            # <<<<
             print('   Training finished.')
 
             return hist
