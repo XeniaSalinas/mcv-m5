@@ -18,7 +18,7 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
     
     # Build the training model:
     x = base_model.output
-    x = Convolution2D(1024, 3, 3, activation='relu', border_mode='valid', name='conv_CAM')(x)
+    x = Convolution2D(1024, 3, 3, activation='relu', border_mode='same', name='conv_CAM')(x)
     x = GlobalAveragePooling2D(name="GAP")(x)
     dense_layer = Dense(n_classes, name='dense')
     x = dense_layer(x)
