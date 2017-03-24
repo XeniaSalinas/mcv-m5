@@ -2,6 +2,7 @@
 from keras.models import Model
 from keras.layers import Dense, Activation
 from keras.layers.pooling import GlobalAveragePooling2D
+from keras.layers.convolutional import Convolution2D
 
 from keras.applications.vgg16 import VGG16
 
@@ -21,6 +22,8 @@ def build_vggGAP(img_shape=(3, 224, 224), n_classes=1000, l2_reg=0.,
 
     # Add final layers
     x = base_model.output
+    
+    x = Convolution2D(1024, 3, 3, activation='relu', border_mode='valid', name='conv_CAM')(x)
     
     x = GlobalAveragePooling2D(name="GAP")(x)
     x = Dense(n_classes, name='dense')(x)

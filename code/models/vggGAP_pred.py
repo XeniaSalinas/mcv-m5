@@ -18,6 +18,7 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
     
     # Build the training model:
     x = base_model.output
+    x = Convolution2D(1024, 3, 3, activation='relu', border_mode='valid', name='conv_CAM')(x)
     x = GlobalAveragePooling2D(name="GAP")(x)
     dense_layer = Dense(n_classes, name='dense')
     x = dense_layer(x)
@@ -27,7 +28,8 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
     print 'nclasses = ', n_classes
     
     # Get the layes of the new dense layer:
-    model_train.load_weights('/home/xianlopez/Documents/myvenv1/tt100k_vggGAP/weights.hdf5')
+#    model_train.load_weights('/home/xianlopez/Documents/myvenv1/tt100k_vggGAP/weights.hdf5')
+    model_train.load_weights('/home/xianlopez/Documents/weights_tt100k_vggGAP_conv.hdf5')
     weights_dense = dense_layer.get_weights()
     print 'weights_dense.__class__.__name__ = ' + weights_dense.__class__.__name__
     print 'len(weights_dense) = ' + str(len(weights_dense))
