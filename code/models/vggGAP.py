@@ -24,7 +24,7 @@ def build_vggGAP(img_shape=(3, 224, 224), n_classes=1000, l2_reg=0.,
     x = base_model.output
     
     # One convolution:
-    x = Convolution2D(1024, 3, 3, activation='relu', border_mode='valid', name='CAM_conv')(x)
+    x = Convolution2D(1024, 3, 3, activation='relu', border_mode='valid', name='conv_CAM')(x)
     
     x = GlobalAveragePooling2D(name="GAP")(x)
     x = Dense(n_classes, name='dense')(x)
