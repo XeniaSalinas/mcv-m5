@@ -70,6 +70,7 @@ class Dataset_Generators():
                                                       color_mode=cf.dataset.color_mode,
                                                       classes=cf.dataset.classes,
                                                       class_mode=cf.dataset.class_mode,
+                                                      model_name=cf.model_name,
                                                       batch_size=cf.batch_size_train,
                                                       shuffle=cf.shuffle_train,
                                                       seed=cf.seed_train,
@@ -84,6 +85,7 @@ class Dataset_Generators():
                                                        color_mode=cf.dataset.color_mode,
                                                        classes=cf.dataset.classes,
                                                        class_mode=cf.dataset.class_mode,
+                                                       model_name=cf.model_name,
                                                        batch_size=int(cf.batch_size_train*(1.-cf.perc_mb2)),
                                                        shuffle=cf.shuffle_train,
                                                        seed=cf.seed_train,
@@ -117,6 +119,7 @@ class Dataset_Generators():
                                                   color_mode=cf.dataset.color_mode,
                                                   classes=cf.dataset.classes,
                                                   class_mode=cf.dataset.class_mode,
+                                                  model_name=cf.model_name,
                                                   batch_size=cf.batch_size_valid,
                                                   shuffle=cf.shuffle_valid,
                                                   seed=cf.seed_valid)
@@ -147,6 +150,7 @@ class Dataset_Generators():
                                                  color_mode=cf.dataset.color_mode,
                                                  classes=cf.dataset.classes,
                                                  class_mode=cf.dataset.class_mode,
+                                                 model_name=cf.model_name,
                                                  batch_size=cf.batch_size_test,
                                                  shuffle=cf.shuffle_test,
                                                  seed=cf.seed_test)

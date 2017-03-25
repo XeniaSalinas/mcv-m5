@@ -67,7 +67,7 @@ class Model_Factory():
                     in_shape = (cf.target_size_train[0],
                                 cf.target_size_train[1],
                                 cf.dataset.n_channels)
-                loss = SSDLoss(in_shape, cf.dataset.n_classes, cf.dataset.priors)
+                loss = SSDLoss(in_shape, cf.dataset.n_classes+1, cf.dataset.priors) #+1 to include background
                 #metrics = [SSDMetrics(in_shape, cf.dataset.n_classes, cf.dataset.priors)]
                 metrics = []
             else:
@@ -195,7 +195,7 @@ class Model_Factory():
                                load_pretrained=cf.load_imageNet,
                                freeze_layers_from=cf.freeze_layers_from, tiny=True)
         elif cf.model_name == 'ssd':
-            model = build_ssd(in_shape, cf.dataset.n_classes,
+            model = build_ssd(in_shape, cf.dataset.n_classes+1, #+1 to consider background
                                load_pretrained=cf.load_imageNet,
                                freeze_layers_from=cf.freeze_layers_from)
         else:
