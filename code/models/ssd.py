@@ -301,6 +301,7 @@ def build_ssd(img_shape=(3, 300, 300), n_classes=80,
     if load_pretrained:
       # Rename last layer to not load pretrained weights
       model.layers[-1].name += '_new'
+      model.load_weights('weights/weights_SSD300.hdf5', by_name=True)
 
     # Freeze some layers
     if freeze_layers_from is not None:
