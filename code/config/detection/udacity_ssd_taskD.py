@@ -14,7 +14,7 @@ weights_file                 = 'weights.hdf5'  # Training weight file name
 
 # Parameters
 train_model                  = True            # Train the model
-test_model                   = True            # Test the model
+test_model                   = False            # Test the model
 pred_model                   = False           # Predict using the model
 
 # Debug
@@ -37,7 +37,7 @@ resize_test                  = (300, 300)      # Resize the image during testing
 
 # Data shuffle
 shuffle_train                = True            # Whether to shuffle the training data
-shuffle_valid                = True            # Whether to shuffle the validation data
+shuffle_valid                = False            # Whether to shuffle the validation data
 shuffle_test                 = False           # Whether to shuffle the testing data
 seed_train                   = 1924            # Random seed for the training shuffle
 seed_valid                   = 1924            # Random seed for the validation shuffle
@@ -47,7 +47,7 @@ seed_test                    = 1924            # Random seed for the testing shu
 optimizer                    = 'rmsprop'       # Optimizer
 learning_rate                = 0.00001         # Training learning rate
 weight_decay                 = 0.              # Weight decay or L2 parameter norm penalty
-n_epochs                     = 50              # Number of epochs during training
+n_epochs                     = 40              # Number of epochs during training
 
 # Callback save results
 save_results_enabled         = False           # Enable the Callback
@@ -59,7 +59,7 @@ save_results_n_legend_rows   = 1               # Number of rows when showing the
 earlyStopping_enabled        = False           # Enable the Callback
 earlyStopping_monitor        = 'avg_recall'    # Metric to monitor
 earlyStopping_mode           = 'max'           # Mode ['max' | 'min']
-earlyStopping_patience       = 30              # Max patience for the early stopping
+earlyStopping_patience       = 100              # Max patience for the early stopping
 earlyStopping_verbose        = 0               # Verbosity of the early stopping
 
 # Callback model check point
@@ -71,7 +71,7 @@ checkpoint_save_weights_only = True            # Save only weights or also model
 checkpoint_verbose           = 1               # Verbosity of the checkpoint
 
 # Callback plot
-plotHist_enabled             = True            # Enable the Callback
+plotHist_enabled             = False            # Enable the Callback
 plotHist_verbose             = 0               # Verbosity of the callback
 
 # Callback LR decay scheduler
@@ -83,8 +83,8 @@ lrDecayScheduler_rate        = 2               # Decay rate (new_lr = lr / decay
 norm_imageNet_preprocess           = False     # Normalize following imagenet procedure
 norm_fit_dataset                   = False     # If True it recompute std and mean from images. Either it uses the std and mean set at the dataset config file
 norm_rescale                       = 1/255.    # Scalar to divide and set range 0-1
-norm_featurewise_center            = True      # Substract mean - dataset
-norm_featurewise_std_normalization = True      # Divide std - dataset
+norm_featurewise_center            = False      # Substract mean - dataset
+norm_featurewise_std_normalization = False      # Divide std - dataset
 norm_samplewise_center             = False     # Substract mean - sample
 norm_samplewise_std_normalization  = False     # Divide std - sample
 norm_gcn                           = False     # Global contrast normalization
