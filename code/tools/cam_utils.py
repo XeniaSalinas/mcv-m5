@@ -51,6 +51,7 @@ def get_top_5_classes(heatmaps):
 def heatmap2bbox(heatmap, percent):
     # Compute the threshold from the percentage and the heatmap:
     threshold = np.percentile(heatmap.flatten(), percent)
+#    threshold = 0.2 * np.max(heatmap.flatten())
     print 'min(heatmap) = ' + str(np.min(heatmap.flatten()))
     print 'max(heatmap) = ' + str(np.max(heatmap.flatten()))
     print 'threshold = ' + str(threshold)

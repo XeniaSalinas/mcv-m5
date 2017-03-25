@@ -17,12 +17,14 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
                        input_tensor=None, input_shape=img_shape)
     
     # Build the training model:
-    x = base_model.output
+#    x = base_model.output
+    x = base_model.get_layer('block5_conv3').output
     x = Convolution2D(1024, 3, 3, activation='relu', border_mode='same', name='conv_CAM')(x)
-    x = GlobalAveragePooling2D(name="GAP")(x)
+    base_model_extended = Model(input=base_model.input, output=x)
+    y = GlobalAveragePooling2D(name="GAP")(x)
     dense_layer = Dense(n_classes, name='dense')
-    x = dense_layer(x)
-    predictions = Activation("softmax", name="softmax")(x)
+    y = dense_layer(y)
+    predictions = Activation("softmax", name="softmax")(y)
     model_train = Model(input=base_model.input, output=predictions)
     
     print 'nclasses = ', n_classes
@@ -44,8 +46,12 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
 #    print 'len(weights) = ' + str(len(weights))
 #    print 'weights[0].shape = ' + str(weights[0].shape)
 #    print 'weights[1].shape = ' + str(weights[1].shape)
+
+#    model_train.summary()
+    base_model.summary()
     
-    weights_forcam = weights_dense[0].reshape((1, 1, 512, n_classes))
+#    weights_forcam = weights_dense[0].reshape((1, 1, 512, n_classes))
+    weights_forcam = weights_dense[0].reshape((1, 1, 1024, n_classes))
     print 'weights_forcam.shape = ' + str(weights_forcam.shape)
     
     bias_forcam = np.zeros((n_classes,), dtype = np.float32)
@@ -58,7 +64,7 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
     layerCAM = Convolution2D(n_classes, 1, 1, border_mode='same', name='CAM')
     
     # New model, for predicting:
-    x = base_model.output
+    x = base_model_extended.output
     predictions = layerCAM(x)
 
     # This is the model we will use
