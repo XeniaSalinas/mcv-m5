@@ -1,23 +1,24 @@
 ### Utilities for CAM models.
 import numpy as np
 from skimage.measure import label
+import matplotlib.pyplot as plt
 
 
 # I am assuming the images come one by one. No batches by now.
 
 
-def image2bboxes(model, image, percent):
+def image2bboxes(model, image, percent, K, rescale):
     # Preprocess the image:
-    x = preprocess_input(image)
+    x = preprocess_input(image, rescale)
     # Get the heatmaps for all the classes:
     heatmaps = model.predict(x)
-    # Get the top 5 scoring classes:
-    top_classes = get_top_5_classes(heatmaps)
+    # Get the top K scoring classes:
+    top_classes = get_top_K_classes(heatmaps, K)
     
     print 'top_classes = ' + str(top_classes)
     
     # Initialize the bounding boxes:
-    bboxes = np.zeros([5,4]) # Five bounding boxes, described by 4 numbers each.
+    bboxes = np.zeros([K,4]) # K bounding boxes, described by 4 numbers each.
     # Loop over the top 5 classes:
     idx_bbox = -1
     for idx_class in top_classes:
@@ -28,7 +29,8 @@ def image2bboxes(model, image, percent):
     return bboxes
         
     
-def get_top_5_classes(heatmaps):
+# Find the K classes that have largest prediction score.
+def get_top_K_classes(heatmaps, K):
     # Number of classes:
     nclasses = heatmaps.shape[3]
     # Initialize vector with score of every class:
@@ -39,10 +41,10 @@ def get_top_5_classes(heatmaps):
         
     print 'scores = ' + str(scores)
         
-    # Fin the top 5 scores:
+    # Fin the top K scores:
     scores_aux = scores
-    top_classes = np.zeros(5, dtype=np.int16)
-    for i in range(5):
+    top_classes = np.zeros(K, dtype=np.int16)
+    for i in range(K):
         top_classes[i] = np.argmax(scores_aux)
         scores_aux = scores_aux[np.arange(len(scores_aux)) != top_classes[i]]
     return top_classes
@@ -57,7 +59,7 @@ def heatmap2bbox(heatmap, percent):
     print 'threshold = ' + str(threshold)
     # Here the heatmap is an array of only two dimensions (the spatial dimensions)
     mask = heatmap > threshold
-    print mask
+#    print mask
     # Connected components labeling:
     regions, nregions = label(mask, 8, return_num=True)
     print 'regions.__class__.__name__ = ' + regions.__class__.__name__
@@ -103,5 +105,22 @@ def heatmap2bbox(heatmap, percent):
     
     return bbox
 
-def preprocess_input(x):
+def preprocess_input(x, rescale):
+    # 'RGB'->'BGR'
+    x = x[:, :, ::-1]
+    # Zero-center by mean pixel
+    x[:, :, 0] -= 103.939
+    x[:, :, 1] -= 116.779
+    x[:, :, 2] -= 123.68
+    # Rescale>
+    x *= rescale
     return x
+
+
+def plot_image_n_bboxes(img, bboxes):
+    plt.matshow(img)
+    plt.show()
+    
+    
+    
+    

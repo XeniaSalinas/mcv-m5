@@ -31,7 +31,9 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
     
     # Get the layes of the new dense layer:
 #    model_train.load_weights('/home/xianlopez/Documents/myvenv1/tt100k_vggGAP/weights.hdf5')
-    model_train.load_weights('/home/xianlopez/Documents/weights_tt100k_vggGAP_conv.hdf5')
+#    model_train.load_weights('/home/xianlopez/Documents/weights_tt100k_vggGAP_conv.hdf5')
+    model_train.load_weights('/home/xianlopez/Documents/weights_tt100k_weak_vggGAP_short.hdf5')
+#    model_train.load_weights('/home/xianlopez/Documents/weights_tt100k_weak_vggGAP_long.hdf5')
     weights_dense = dense_layer.get_weights()
     print 'weights_dense.__class__.__name__ = ' + weights_dense.__class__.__name__
     print 'len(weights_dense) = ' + str(len(weights_dense))
@@ -65,7 +67,11 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
     
     # New model, for predicting:
     x = base_model_extended.output
-    predictions = layerCAM(x)
+#    predictions = layerCAM(x)
+    
+    
+    x = layerCAM(x)
+    predictions = GlobalAveragePooling2D(name="GAPpred")(x)
 
     # This is the model we will use
     model = Model(input=base_model.input, output=predictions)
