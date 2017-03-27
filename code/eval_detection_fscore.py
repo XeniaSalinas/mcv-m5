@@ -4,6 +4,7 @@ import numpy as np
 import math
 import cv2
 
+from keras import backend as K
 from keras.applications.imagenet_utils import preprocess_input
 from keras.preprocessing import image
 
@@ -13,8 +14,8 @@ from tools.yolo_utils import *
 from tools.ssd_utils import *
 
 # Input parameters to select the Dataset and the model used
-dataset_name = 'Udacity' #set to TT100K_detection otherwise
-model_name = 'ssd' #set to yolo otherwise
+dataset_name = 'TT100K_detection' #accepted datasets: Udacity or TT100K_detection
+model_name = 'ssd' #accepted models: yolo, tiny_yolo or ssd
 
 # Net output post-processing needs two parameters:
 detection_threshold = 0.6 # Min probablity for a prediction to be considered
@@ -51,10 +52,12 @@ if model_name == 'yolo' or model_name == 'tiny_yolo':
                    load_pretrained=False,freeze_layers_from='base_model',
                    tiny=tiny_yolo)
 elif model_name == 'ssd':
-    input_shape = (3, 300, 300)
+    if K.image_dim_ordering() == 'th':
+        input_shape = (3,300,300)
+    else:
+        input_shape = (300,300,3)
     model = build_ssd(img_shape=input_shape,n_classes=NUM_CLASSES + 1,  # +1 to consider background
-                      load_pretrained=False,
-                      freeze_layers_from='base_model')
+                      load_pretrained=False,freeze_layers_from='base_model')
 
 model.load_weights(sys.argv[1])
 
@@ -77,8 +80,13 @@ total_true = 0.
 total_pred = 0.
 
 for i,img_path in enumerate(imfiles):
-  
-  img = image.load_img(img_path, target_size=(input_shape[1], input_shape[2]))
+  if model_name in ['yolo','tiny_yolo']:
+    img = image.load_img(img_path, target_size=(input_shape[1], input_shape[2]))
+  else:
+    if K.image_dim_ordering() == 'th':
+      img = image.load_img(img_path, target_size=(input_shape[1], input_shape[2]))
+    else:
+      img = image.load_img(img_path, target_size=(input_shape[0], input_shape[1]))
   img = image.img_to_array(img)
   img = img / 255.
   inputs.append(img.copy())
@@ -95,7 +103,7 @@ for i,img_path in enumerate(imfiles):
         if model_name == 'yolo' or model_name == 'tiny_yolo':
             boxes_pred = yolo_postprocess_net_out(net_out[i], priors, classes, detection_threshold, nms_threshold)
         elif model_name == 'ssd':
-            boxes_pred = detection_out(net_out[i], NUM_CLASSES + 1)
+            boxes_pred = ssd_detection_out(net_out[i], classes, detection_threshold, nms_threshold)
 
         boxes_true = []
         label_path = img_path.replace('jpg','txt')
