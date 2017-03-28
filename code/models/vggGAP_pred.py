@@ -28,8 +28,8 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
     model_train = Model(input=base_model.input, output=predictions)
     
     # Get the weights of the new dense layer:
-#    model_train.load_weights('/home/master/m5_project/mcv-m5/code/weights/weights_tt100k_weak_vggGAP_short.hdf5')
-    model_train.load_weights('/home/xianlopez/Documents/weights_tt100k_weak_vggGAP_short.hdf5')
+    model_train.load_weights('/home/master/m5_project/mcv-m5/code/weights/weights_tt100k_weak_vggGAP_short.hdf5')
+#    model_train.load_weights('/home/xianlopez/Documents/weights_tt100k_weak_vggGAP_short.hdf5')
     weights_dense = dense_layer.get_weights()
     weights_forcam = weights_dense[0].reshape((1, 1, 1024, n_classes))
 #    bias_forcam = np.zeros((n_classes,), dtype = np.float32)
