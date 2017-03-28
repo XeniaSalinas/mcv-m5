@@ -21,7 +21,6 @@ def build_vggGAP(img_shape=(3, 224, 224), n_classes=1000, l2_reg=0.,
                        input_tensor=None, input_shape=img_shape)
 
     # Add final layers
-#    x = base_model.output
     x = base_model.get_layer('block5_conv3').output
     
     # One convolution:

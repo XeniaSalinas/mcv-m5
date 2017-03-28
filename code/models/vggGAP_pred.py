@@ -17,8 +17,8 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
                        input_tensor=None, input_shape=img_shape)
     
     # Build the training model:
-#    x = base_model.output
     x = base_model.get_layer('block5_conv3').output
+    # Add one more convolution: # TODO: make sure the weights of this layer are loaded.
     x = Convolution2D(1024, 3, 3, activation='relu', border_mode='same', name='conv_CAM')(x)
     base_model_extended = Model(input=base_model.input, output=x)
     y = GlobalAveragePooling2D(name="GAP")(x)
@@ -27,39 +27,13 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
     predictions = Activation("softmax", name="softmax")(y)
     model_train = Model(input=base_model.input, output=predictions)
     
-    print 'nclasses = ', n_classes
-    
-    # Get the layes of the new dense layer:
-#    model_train.load_weights('/home/xianlopez/Documents/myvenv1/tt100k_vggGAP/weights.hdf5')
-#    model_train.load_weights('/home/xianlopez/Documents/weights_tt100k_vggGAP_conv.hdf5')
+    # Get the weights of the new dense layer:
+#    model_train.load_weights('/home/master/m5_project/mcv-m5/code/weights/weights_tt100k_weak_vggGAP_short.hdf5')
     model_train.load_weights('/home/xianlopez/Documents/weights_tt100k_weak_vggGAP_short.hdf5')
-#    model_train.load_weights('/home/xianlopez/Documents/weights_tt100k_weak_vggGAP_long.hdf5')
     weights_dense = dense_layer.get_weights()
-    print 'weights_dense.__class__.__name__ = ' + weights_dense.__class__.__name__
-    print 'len(weights_dense) = ' + str(len(weights_dense))
-    print 'weights_dense[0].shape = ' + str(weights_dense[0].shape)
-    print 'weights_dense[0].dtype = ' + str(weights_dense[0].dtype)
-    print 'weights_dense[1].shape = ' + str(weights_dense[1].shape)
-    print 'weights_dense[1].dtype = ' + str(weights_dense[1].dtype)
-    
-#    base_model.summary()
-#    weights = base_model.layers[2].get_weights()
-#    print 'weights.__class__.__name__ = ' + weights.__class__.__name__
-#    print 'len(weights) = ' + str(len(weights))
-#    print 'weights[0].shape = ' + str(weights[0].shape)
-#    print 'weights[1].shape = ' + str(weights[1].shape)
-
-#    model_train.summary()
-    base_model.summary()
-    
-#    weights_forcam = weights_dense[0].reshape((1, 1, 512, n_classes))
     weights_forcam = weights_dense[0].reshape((1, 1, 1024, n_classes))
-    print 'weights_forcam.shape = ' + str(weights_forcam.shape)
-    
-    bias_forcam = np.zeros((n_classes,), dtype = np.float32)
-    print 'bias_forcam.shape = ' + str(bias_forcam.shape)
-    print 'bias_forcam.dtype = ' + str(bias_forcam.dtype)
-    
+#    bias_forcam = np.zeros((n_classes,), dtype = np.float32)
+    bias_forcam = weights_dense[1].reshape((n_classes))
     list_forcam = [weights_forcam, bias_forcam]
     
     # Layer to generate the Class Activation Map:
@@ -67,30 +41,13 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
     
     # New model, for predicting:
     x = base_model_extended.output
-#    predictions = layerCAM(x)
-    
-    
-    x = layerCAM(x)
-    predictions = GlobalAveragePooling2D(name="GAPpred")(x)
+    predictions = layerCAM(x)
 
     # This is the model we will use
     model = Model(input=base_model.input, output=predictions)
     
-    
-    
-    
-    print 'input = ' + str(layerCAM.input)
-    print 'output = ' + str(layerCAM.output)
-    print 'input_shape = ' + str(layerCAM.input_shape)
-    print 'output_shape = ' + str(layerCAM.output_shape)
-    
-#    weigths_layerCAM = layerCAM.get_weights()
+    # Set the weights to the new layer:
     layerCAM.set_weights(list_forcam)
-    weigths_layerCAM = layerCAM.get_weights()
-    print 'weigths_layerCAM.__class__.__name__ = ' + weigths_layerCAM.__class__.__name__
-    print 'len(weights_layerCAM) = ' + str(len(weigths_layerCAM))
-    print 'weights_layerCAM[0].shape = ' + str(weigths_layerCAM[0].shape)
-    print 'weights_layerCAM[1].shape = ' + str(weigths_layerCAM[1].shape)
 
 
 

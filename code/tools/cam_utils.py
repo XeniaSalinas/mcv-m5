@@ -15,7 +15,9 @@ def image2bboxes(model, image, percent, K, rescale):
     # Get the top K scoring classes:
     top_classes = get_top_K_classes(heatmaps, K)
     
-    print 'top_classes = ' + str(top_classes)
+    # Write the heatmap (if we are only considering one top class):
+    if K == 1:
+        write_heatmap(heatmaps[0,:,:,top_classes[0]])
     
     # Initialize the bounding boxes:
     bboxes = np.zeros([K,4]) # K bounding boxes, described by 4 numbers each.
@@ -25,7 +27,6 @@ def image2bboxes(model, image, percent, K, rescale):
         idx_bbox += 1
         # Get the bounding box for the current class:
         bboxes[idx_bbox,:] = heatmap2bbox(heatmaps[0,:,:,idx_class], percent)
-        print 'bbox = ' + str(bboxes[idx_bbox,:])
     return bboxes
         
     
@@ -39,8 +40,6 @@ def get_top_K_classes(heatmaps, K):
     for idx_class in range(nclasses):
         scores[idx_class] = sum(sum(heatmaps[0,:,:,idx_class]))
         
-    print 'scores = ' + str(scores)
-        
     # Fin the top K scores:
     scores_aux = scores
     top_classes = np.zeros(K, dtype=np.int16)
@@ -52,32 +51,25 @@ def get_top_K_classes(heatmaps, K):
 
 def heatmap2bbox(heatmap, percent):
     # Compute the threshold from the percentage and the heatmap:
+    # TODO: in the paper the use as threshold the 20% of the maximum. Here I 
+    # cannot do this, since we have negative values...
     threshold = np.percentile(heatmap.flatten(), percent)
-#    threshold = 0.2 * np.max(heatmap.flatten())
-    print 'min(heatmap) = ' + str(np.min(heatmap.flatten()))
-    print 'max(heatmap) = ' + str(np.max(heatmap.flatten()))
-    print 'threshold = ' + str(threshold)
     # Here the heatmap is an array of only two dimensions (the spatial dimensions)
     mask = heatmap > threshold
-#    print mask
+    # Write mask:
+    write_mask(mask)
     # Connected components labeling:
     regions, nregions = label(mask, 8, return_num=True)
-    print 'regions.__class__.__name__ = ' + regions.__class__.__name__
-    print 'regions.shape = ' + str(regions.shape)
-    print 'nregions = ' + str(nregions)
-    print regions
     if nregions > 0:
         # Keep only the biggest region:
         biggest_region = -1
         biggest_area = 0
         # We are discarding region 0, wich corresponds to background
         for i in range(1,nregions+1):
-            print i
             current_area = sum(sum(regions == i))
             if current_area > biggest_area:
                 biggest_area = current_area
                 biggest_region = i
-        print 'biggest area = ' + str(biggest_area)
         # Arrays with coordinates of biggest region::
         x_idxs = np.zeros(biggest_area)
         y_idxs = np.zeros(biggest_area)
@@ -90,8 +82,6 @@ def heatmap2bbox(heatmap, percent):
                     y_idxs[count] = i
         # Corners of the bounding box enclosing the biggest region:
         # top left corner:
-        print 'x_idxs = ' + str(x_idxs)
-        print 'y_idxs = ' + str(y_idxs)
         x = np.min(x_idxs)
         y = np.min(y_idxs)
         # height and width:
@@ -120,6 +110,22 @@ def preprocess_input(x, rescale):
 def plot_image_n_bboxes(img, bboxes):
     plt.matshow(img)
     plt.show()
+
+
+# Write tatrix to text file:
+def write_heatmap(array_in):
+    matrix = np.matrix(array_in)
+    with open('heatmap.txt', 'w') as f:
+        for line in matrix:
+            np.savetxt(f, line, fmt='%.2f')
+
+
+# Write tatrix to text file:
+def write_mask(array_in):
+    matrix = np.matrix(array_in)
+    with open('mask.txt', 'w') as f:
+        for line in matrix:
+            np.savetxt(f, line, fmt='%i')
     
     
     
