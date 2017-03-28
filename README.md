@@ -113,7 +113,7 @@ The weights resulting of our experiments can be found in this [link](https://dri
  
 ## Contributions 
 - Added new config files to run the YOLOv2, tiny YOLO and SSD models in `code/config/detection/`.
-- Adaptation of SSD model provided by https://github.com/rykov8/ssd_keras to the framework in `code/models/ssd.py`.
+- Adaptation of SSD model provided by https://github.com/rykov8/ssd_keras to the framework in `code/models/ssd.py` and `code/layers/ssd_layers.py`.
 - Adaptation of SDD Loss and metrics provided by https://github.com/rykov8/ssd_keras to the framework in `code/metrics/metrics.py`.
 - Adapt F-score and FPS evaluation code to SSD model in `code/eval_detection_fscore.py`.
 - Added SSD utils in `code/tools/sdd_utils.py` and `code/tools/detection_utils.py`.
