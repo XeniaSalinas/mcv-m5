@@ -9,7 +9,7 @@ from keras.layers import MaxPooling2D
 from keras.layers import LeakyReLU
 from keras.layers import merge
 from keras.layers import Reshape
-from code.layers.yolo_layers import YOLOConvolution2D,Reorg
+from layers.yolo_layers import YOLOConvolution2D,Reorg
 
 """
     YOLO utitlities

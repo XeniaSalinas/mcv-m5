@@ -3,8 +3,8 @@ from keras import backend as K
 dim_ordering = K.image_dim_ordering()
 from keras.callbacks import Callback, Progbar, ProgbarLogger
 from keras.engine.training import GeneratorEnqueuer
-from code.tools.save_images import save_img3
-from code.tools.plot_history import plot_history
+from tools.save_images import save_img3
+from tools.plot_history import plot_history
 import numpy as np
 import time
 

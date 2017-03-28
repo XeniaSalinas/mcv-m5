@@ -81,3 +81,16 @@ SSD implements data augmentation to make the model more robust and improving up 
 
 During inference is essential to perform non-maximum suppression to filter the large number of boxes generated. The results on PASCAL VOC2007 showed that with a low 300x300 resolution the SSD is more accurate than Fast R-CNN and when the resolution is larger (512x512), it surpasses Faster R-CNN by 1.7% mAP. Using data augmentation, the results showed than the SSD300 model already surpasses Faster R-CNN by 1.1% mAP. Compared to YOLO, SSD300 achieves better accuracy for smaller input images on VOC2007 test: 74.3% mAP at 59 FPS.
 Compared to R-CNN, SDD has less localization error but more confusions with similar objects because SDD shares locations for multiple categories. SDD performs worse in small objects than in bigger ones and that can be solved increasing the input image size from 300x300 to 512x512, thus reducing the speed. 
+
+## [Learning Deep Features for Discriminative Localization](http://cnnlocalization.csail.mit.edu/)
+### Authors: Bolei Zhou, Aditya Khosla, Agata Lapedriza, Aude Oliva, Antonio Torralba
+
+### Summary
+In this work, a technique to perform weakly supervised object localization is presented. It can be applied to any Convolutional Neural Network used for classification. By introducing a slight modification in the network, this can be used for object localization, despite being trained only for classification.
+
+The main idea behind this technique is to remove the densely connected layers of the network, and apply a global average pooling after the last convolutional layer, followed by a dense layer and a softmax. The new network obtained this way may have a slightly lower accuracy, but it can be used to create the Class Activation Map (CAM) for each category. This CAM can be used then to localize objects.
+
+In order to obtain the CAM, once the modified network has been trained, all the new layers are removed, and a 1x1 convolution is placed after the last convolution, with the weights of the dense layer that we used before. The output of such a network is a heatmap for each category, with higher values where the features associated with such category are found.
+
+In the paper, this technique is applied to GoogLeNet and VGG-16. These networks are the used in ILSVRC to perform localization, reaching a top-5 error close to AlexNet, which is fully supervised (37.1% against 34.2). However, other networks that are also trained in a fully supervised way are better by a wider margin.
+
