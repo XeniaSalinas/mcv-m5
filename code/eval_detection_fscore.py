@@ -10,11 +10,11 @@ from keras.preprocessing import image
 
 from models.yolo import build_yolo
 from models.ssd import build_ssd
-from yolo_utils import *
-from ssd_utils import *
+from tools.yolo_utils import *
+from tools.ssd_utils import *
 
 # Input parameters to select the Dataset and the model used
-dataset_name = 'TT100K_detection' #accepted datasets: Udacity or TT100K_detection
+dataset_name = 'Udacity' #accepted datasets: Udacity or TT100K_detection
 model_name = 'ssd' #accepted models: yolo, tiny_yolo or ssd
 
 # Net output post-processing needs two parameters:

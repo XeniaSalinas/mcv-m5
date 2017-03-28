@@ -2,14 +2,8 @@ import numpy as np
 import warnings
 import math
 import cv2
-from keras.models import Model, K, Sequential
-from keras.layers import Input, Activation
-from keras.layers import Convolution2D
-from keras.layers import MaxPooling2D
-from keras.layers import LeakyReLU
-from keras.layers import merge
-from keras.layers import Reshape
-from code.layers.yolo_layers import YOLOConvolution2D,Reorg
+
+from detection_utils import *
 
 """
     YOLO utitlities
@@ -74,50 +68,6 @@ def yolo_build_gt_batch(batch_gt,image_shape,num_classes,num_priors=5):
 
     return batch_y
 
-
-class BoundBox:
-    def __init__(self, classes):
-        self.x, self.y = float(), float()
-        self.w, self.h = float(), float()
-        self.c = float()
-        self.class_num = classes
-        self.probs = np.zeros((classes,))
-
-def overlap(x1,w1,x2,w2):
-    l1 = x1 - w1 / 2.;
-    l2 = x2 - w2 / 2.;
-    left = max(l1, l2)
-    r1 = x1 + w1 / 2.;
-    r2 = x2 + w2 / 2.;
-    right = min(r1, r2)
-    return right - left;
-
-def box_intersection(a, b):
-    w = overlap(a.x, a.w, b.x, b.w);
-    h = overlap(a.y, a.h, b.y, b.h);
-    if w < 0 or h < 0: return 0;
-    area = w * h;
-    return area;
-
-def box_union(a, b):
-    i = box_intersection(a, b);
-    u = a.w * a.h + b.w * b.h - i;
-    return u;
-
-def box_iou(a, b):
-    return box_intersection(a, b) / box_union(a, b);
-
-def prob_compare(box):
-    return box.probs[box.class_num]
-
-def expit(x):
-	return 1. / (1. + np.exp(-x))
-
-def _softmax(x):
-    e_x = np.exp(x - np.max(x))
-    out = e_x / e_x.sum()
-    return out
-
 def yolo_postprocess_net_out(net_out, anchors, labels, threshold, nms_threshold):
 	C = len(labels) 
         B = len(anchors)
@@ -137,7 +87,7 @@ def yolo_postprocess_net_out(net_out, anchors, labels, threshold, nms_threshold)
 				bx.w = math.exp(bx.w) * anchors[b][0] / W
 				bx.h = math.exp(bx.h) * anchors[b][1] / H
 				classes = net_out[row, col, b, 5:]
-				bx.probs = _softmax(classes) * bx.c
+				bx.probs = softmax(classes) * bx.c
 				bx.probs *= bx.probs > threshold
 				boxes.append(bx)
 
