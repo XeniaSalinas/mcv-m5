@@ -59,3 +59,15 @@ Comparing the results with other real-time systems they saw that Fast YOLO was t
 Comparing the results with Fast R-CNN they saw that the most common error in YOLO was localization error while on Fast R-CNN they had three time the probability to predict background detections. They also developed a combination of Fast R-CNN and YOLO where YOLO system eliminates the background detections from Fast R-CNN. With this combination, they achieved a 3.2 gain over the Fast R-CNN getting a 75.0% mAP on the VOC 2007 test set.
 
 On VOC 2012 test set YOLO scores 57.9% mAP, lower than the other state of the art systems. The combined system (Fast R-CNN + YOLO) is one of the highest performing detection. Finally, they analyzed the generalizability of the system testing person detection on artwork, they could see that its AP degrades less than other methods, from 59.2% on VOC 2007 to 53.3% on Picasso dataset or 45% on People-Art.
+
+## [Learning Deep Features for Discriminative Localization](http://cnnlocalization.csail.mit.edu/)
+### Authors: Bolei Zhou, Aditya Khosla, Agata Lapedriza, Aude Oliva, Antonio Torralba
+
+### Summary
+In this work, a technique to perform weakly supervised object localization is presented. It can be applied to any Convolutional Neural Network used for classification. By introducing a slight modification in the network, this can be used for object localization, despite being trained only for classification.
+
+The main idea behind this technique is to remove the densely connected layers of the network, and apply a global average pooling after the last convolutional layer, followed by a dense layer and a softmax. The new network obtained this way may have a slightly lower accuracy, but it can be used to create the Class Activation Map (CAM) for each category. This CAM can be used then to localize objects.
+
+In order to obtain the CAM, once the modified network has been trained, all the new layers are removed, and a 1x1 convolution is placed after the last convolution, with the weights of the dense layer that we used before. The output of such a network is a heatmap for each category, with higher values where the features associated with such category are found.
+
+In the paper, this technique is applied to GoogLeNet and VGG-16. These networks are the used in ILSVRC to perform localization, reaching a top-5 error close to AlexNet, which is fully supervised (37.1% against 34.2). However, other networks that are also trained in a fully supervised way are better by a wider margin.
