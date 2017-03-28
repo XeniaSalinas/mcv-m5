@@ -108,6 +108,9 @@ The weights resulting of our experiments can be found in this [link](https://dri
 - Fine-tune a SSD network on Udacity dataset.
 - Evaluate the performance using the F-score and FPS of the best epochs.
 
+### CAM
+- Implement the Class Activation Map technique, that converts any classification network into one that can be used for object localization (without training on bounding boxes).
+
 ### Boost the performance
  - 	Train the YOLOv2 on TT100K dataset using data augmentation.
  
@@ -152,7 +155,7 @@ If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEV
 		- Fine tuning: `python train.py -c ./config/detection/udacity_ssd_taskD.py -e udacity_ssd_taskD`
 		
 - CAM
-	This technique is not totally operative yet. Its code is in the following files:
+	- This technique is not totally operative yet. Its code is in the following files:
 		- predict_cam.py: this is the executable file, that loads an image and call the rest of the functions related.
 		- tools/cam_utils.py: here are the functions that use the network to predict, compute the heatmap, and build the bounding boxes.
 		- models/vggGAP.py: modification of VGG-16 network that is used during the training phase. We adapted the dataset TT100K_detection for classification (also incrementing the validation set), and trained there this network.
