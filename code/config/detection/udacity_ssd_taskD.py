@@ -1,6 +1,6 @@
 # Dataset
 problem_type                 = 'detection'     # ['classification' | 'detection' | 'segmentation']
-dataset_name                 = 'TT100K_detection' # Dataset name
+dataset_name                 = 'Udacity' # Dataset name
 dataset_name2                = None            # Second dataset name. None if not Domain Adaptation
 perc_mb2                     = None            # Percentage of data from the second dataset in each minibatch
 
@@ -15,7 +15,7 @@ weights_file                 = 'weights.hdf5'  # Training weight file name
 # Parameters
 train_model                  = True            # Train the model
 test_model                   = False            # Test the model
-pred_model                   = False            # Predict using the model
+pred_model                   = False           # Predict using the model
 
 # Debug
 debug                        = False           # Use only few images for debuging
@@ -26,8 +26,8 @@ debug_n_epochs               = 2              # N of training epochs in debug mo
 
 # Batch sizes
 batch_size_train             = 16             # Batch size during training
-batch_size_valid             = 32             # Batch size during validation
-batch_size_test              = 32             # Batch size during testing
+batch_size_valid             = 16             # Batch size during validation
+batch_size_test              = 16             # Batch size during testing
 crop_size_train              = None            # Crop size during training (Height, Width) or None
 crop_size_valid              = None            # Crop size during validation
 crop_size_test               = None            # Crop size during testing
@@ -37,7 +37,7 @@ resize_test                  = (300, 300)      # Resize the image during testing
 
 # Data shuffle
 shuffle_train                = True            # Whether to shuffle the training data
-shuffle_valid                = False           # Whether to shuffle the validation data
+shuffle_valid                = False            # Whether to shuffle the validation data
 shuffle_test                 = False           # Whether to shuffle the testing data
 seed_train                   = 1924            # Random seed for the training shuffle
 seed_valid                   = 1924            # Random seed for the validation shuffle
@@ -47,19 +47,19 @@ seed_test                    = 1924            # Random seed for the testing shu
 optimizer                    = 'rmsprop'       # Optimizer
 learning_rate                = 0.00001         # Training learning rate
 weight_decay                 = 0.              # Weight decay or L2 parameter norm penalty
-n_epochs                     = 10              # Number of epochs during training
+n_epochs                     = 40              # Number of epochs during training
 
 # Callback save results
 save_results_enabled         = False           # Enable the Callback
 save_results_nsamples        = 5               # Number of samples to save
 save_results_batch_size      = 5               # Size of the batch
-save_results_n_legend_rows   = 1               # Number of rows when showwing the legend
+save_results_n_legend_rows   = 1               # Number of rows when showing the legend
 
 # Callback early stoping
 earlyStopping_enabled        = False           # Enable the Callback
 earlyStopping_monitor        = 'avg_recall'    # Metric to monitor
 earlyStopping_mode           = 'max'           # Mode ['max' | 'min']
-earlyStopping_patience       = 100             # Max patience for the early stopping
+earlyStopping_patience       = 100              # Max patience for the early stopping
 earlyStopping_verbose        = 0               # Verbosity of the early stopping
 
 # Callback model check point
@@ -83,8 +83,8 @@ lrDecayScheduler_rate        = 2               # Decay rate (new_lr = lr / decay
 norm_imageNet_preprocess           = False     # Normalize following imagenet procedure
 norm_fit_dataset                   = False     # If True it recompute std and mean from images. Either it uses the std and mean set at the dataset config file
 norm_rescale                       = 1/255.    # Scalar to divide and set range 0-1
-norm_featurewise_center            = False     # Substract mean - dataset
-norm_featurewise_std_normalization = False     # Divide std - dataset
+norm_featurewise_center            = False      # Substract mean - dataset
+norm_featurewise_std_normalization = False      # Divide std - dataset
 norm_samplewise_center             = False     # Substract mean - sample
 norm_samplewise_std_normalization  = False     # Divide std - sample
 norm_gcn                           = False     # Global contrast normalization

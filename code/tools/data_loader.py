@@ -289,7 +289,7 @@ class ImageDataGenerator(object):
     def flow_from_directory(self, directory,
                             resize=None, target_size=(256, 256),
                             color_mode='rgb',
-                            classes=None, class_mode='categorical',
+                            classes=None, class_mode='categorical', model_name='yolo',
                             batch_size=32, shuffle=True, seed=None,
                             gt_directory=None,
                             save_to_dir=None, save_prefix='',
@@ -297,7 +297,7 @@ class ImageDataGenerator(object):
         return DirectoryIterator(
             directory, self, resize=resize,
             target_size=target_size, color_mode=color_mode,
-            classes=classes, class_mode=class_mode,
+            classes=classes, class_mode=class_mode, model_name=model_name,
             dim_ordering=self.dim_ordering,
             batch_size=batch_size, shuffle=shuffle, seed=seed,
             gt_directory=gt_directory,
@@ -307,7 +307,7 @@ class ImageDataGenerator(object):
     def flow_from_directory2(self, directory,
                              resize=None, target_size=(256, 256),
                              color_mode='rgb',
-                             classes=None, class_mode='categorical',
+                             classes=None, class_mode='categorical', model_name='yolo',
                              batch_size=32, shuffle=True, seed=None,
                              gt_directory=None,
                              save_to_dir=None, save_prefix='',
@@ -316,7 +316,7 @@ class ImageDataGenerator(object):
         return DirectoryIterator2(
             directory, self, resize=resize,
             target_size=target_size, color_mode=color_mode,
-            classes=classes, class_mode=class_mode,
+            classes=classes, class_mode=class_mode, model_name=model_name,
             dim_ordering=self.dim_ordering,
             batch_size=batch_size, shuffle=shuffle, seed=seed,
             gt_directory=gt_directory,
@@ -840,7 +840,7 @@ class DirectoryIterator(Iterator):
     def __init__(self, directory, image_data_generator,
                  resize=None, target_size=None, color_mode='rgb',
                  dim_ordering='default',
-                 classes=None, class_mode='categorical',
+                 classes=None, class_mode='categorical', model_name='yolo',
                  batch_size=32, shuffle=True, seed=None, gt_directory=None,
                  save_to_dir=None, save_prefix='', save_format='jpeg'):
         # Check dim order
@@ -890,6 +890,7 @@ class DirectoryIterator(Iterator):
                              '; expected one of "categorical", '
                              '"binary", "sparse", "segmentation", "detection" or None.')
         self.class_mode = class_mode
+        self.model_name = model_name
         self.has_gt_image = True if self.class_mode == 'segmentation' else False
 
         # Check class names
@@ -1047,17 +1048,13 @@ class DirectoryIterator(Iterator):
             for i, label in enumerate(self.classes[index_array]):
                 batch_y[i, label] = 1.
         elif self.class_mode == 'detection':
-            # TODO detection: check model, other networks may expect a different batch_y format and shape
-            # YOLOLoss expects a particular batch_y format and shape
-            """
             if self.model_name in ['yolo','tiny-yolo']:
+                print(self.model_name)
                 batch_y = yolo_build_gt_batch(batch_y, self.image_shape, self.nb_class)
             elif self.model_name == 'ssd':
                 batch_y = ssd_build_gt_batch(batch_y, self.image_shape, self.nb_class)
             else:
                 raise ValueError('Unknown model')
-            """
-            batch_y = ssd_build_gt_batch(batch_y, self.image_shape, self.nb_class)
         elif self.class_mode == None:
             return batch_x
 
@@ -1069,7 +1066,7 @@ class DirectoryIterator2(object):
     def __init__(self, directory, image_data_generator,
                  resize=None, target_size=None, color_mode='rgb',
                  dim_ordering='default',
-                 classes=None, class_mode='categorical',
+                 classes=None, class_mode='categorical', model_name='yolo',
                  batch_size=32, shuffle=True, seed=None, gt_directory=None,
                  save_to_dir=None, save_prefix='', save_format='jpeg',
                  directory2=None, gt_directory2=None, batch_size2=None):
@@ -1077,7 +1074,7 @@ class DirectoryIterator2(object):
         self.DI1 = DirectoryIterator(
             directory, image_data_generator, resize=resize,
             target_size=target_size, color_mode=color_mode,
-            classes=classes, class_mode=class_mode,
+            classes=classes, class_mode=class_mode, model_name=model_name,
             dim_ordering=dim_ordering,
             batch_size=batch_size, shuffle=shuffle, seed=seed,
             gt_directory=gt_directory,
@@ -1087,7 +1084,7 @@ class DirectoryIterator2(object):
         self.DI2 = DirectoryIterator(
             directory2, image_data_generator, resize=resize,
             target_size=target_size, color_mode=color_mode,
-            classes=classes, class_mode=class_mode,
+            classes=classes, class_mode=class_mode, model_name=model_name,
             dim_ordering=dim_ordering,
             batch_size=batch_size2, shuffle=shuffle, seed=seed,
             gt_directory=gt_directory2,

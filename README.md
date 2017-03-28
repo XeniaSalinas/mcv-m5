@@ -83,9 +83,76 @@ If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEV
 	- TT100K Dataset:
 		- Train from scratch: `python train.py -c ./config/classification/tt100k_denseNet_taskD_scratch.py -e tt100k_denseNet_taskD_scratch`
 		
-
 ## Results
 
 The summary of week 2 results can be found in this [link](https://docs.google.com/presentation/d/18LAQ4oPBahXFwfIXP-z77KeSHZ3ZdCD9sSPX-1ivDng/edit?usp=sharing)		
 
 The weights resulting of our experiments can be found in this [link](https://drive.google.com/drive/folders/0B2fYuDqzasf7TU04SFpfNTh2dzA)
+
+# Week 3/4
+
+## Goals
+
+### YOLOv2
+- Fine-tune a YOLOv2 network on TT100K dataset.
+- Fine-tune a YOLOv2 network on Udacity dataset.
+- Evaluate the performance using the F-score and FPS of the best epochs.
+
+### Tiny YOLO
+- Fine-tune a Tiny YOLO network on TT100K dataset.
+- Fine-tune a Tiny YOLO network on Udacity dataset.
+- Evaluate the performance using the F-score and FPS of the best epochs.
+ 
+ ### SSD
+- Fine-tune a SSD network on TT100K dataset.
+- Fine-tune a SSD network on Udacity dataset.
+- Evaluate the performance using the F-score and FPS of the best epochs.
+
+### Boost the performance
+ - 	Train the YOLOv2 on TT100K dataset using data augmentation.
+ 
+## Contributions 
+- Added new config files to run the YOLOv2, tiny YOLO and SSD models in `code/config/detection/`.
+- Adaptation of SSD model provided by https://github.com/rykov8/ssd_keras to the framework in `code/models/ssd.py` and `code/layers/ssd_layers.py`.
+- Adaptation of SDD Loss and metrics provided by https://github.com/rykov8/ssd_keras to the framework in `code/metrics/metrics.py`.
+- Adapt F-score and FPS evaluation code to SSD model in `code/eval_detection_fscore.py`.
+- Added SSD utils in `code/tools/sdd_utils.py` and `code/tools/detection_utils.py`.
+
+## Usage
+
+For running this commands, please locate in folder `mcv-m5/code`.
+
+In general, for running the code use `python train.py -c config/config_file_name.py -e experiment_name` where `config_file_name` is your config file and `experiment_name` is the folder name where your experiment is going to be saved. 
+
+If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEVICES=0`.
+
+- YOLOv2
+
+	- TT100K_detection Dataset:
+		- Fine tuning: `python train.py -c ./config/detection/tt100k_detection.py -e tt100k_yolo_taskA`
+	
+	- Udacity Dataset
+		- Fine tuning: `python train.py -c ./config/detection/udacity_yolo_taskC.py -e udacity_yolo_taskC`
+		
+	- Data augmentation
+		- Fine tuning: `python train.py -c ./config/detection/tt100k_detection_dataAug_taskE.py -e tt100k_detection_dataAug_taskE`
+		
+- Tiny YOLO
+	- TT100K_detection Dataset:
+		- Fine tuning: `python train.py -c ./config/detection/tt100k_tiny_yolo_taskA.py -e tt100k_tiny_yolo_taskA`
+	
+	- Udacity Dataset
+		- Fine tuning: `python train.py -c ./config/detection/udacity_tiny_yolo_taskC.py -e udacity_tiny_yolo_taskC`
+
+- SSD
+	- TT100K_detection Dataset:
+		- Fine tuning: `python train.py -c ./config/detection/tt100k_detection_ssd.py -e tt100k_ssd_taskD`
+	
+	- Udacity Dataset
+		- Fine tuning: `python train.py -c ./config/detection/udacity_ssd_taskD.py -e udacity_ssd_taskD`
+
+## Results
+
+The summary of week 3/4 results can be found in this [link](https://docs.google.com/presentation/d/18LAQ4oPBahXFwfIXP-z77KeSHZ3ZdCD9sSPX-1ivDng/edit?usp=sharing).	
+
+The weights resulting of our experiments can be found in this [link](https://drive.google.com/open?id=0B2fYuDqzasf7Y3dWSTgwT25wZkk).
