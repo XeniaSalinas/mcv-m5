@@ -136,7 +136,7 @@ def ssd_build_gt_batch(batch_gt,image_shape,num_classes):
             box[0] = obj[1] - (obj[3]/2) # xmin
             box[1] = obj[2] - (obj[4]/2) # ymin
             box[2] = obj[1] + (obj[3]/2) # xmax
-            box[3] = obj[2] - (obj[4]/2) # ymax
+            box[3] = obj[2] + (obj[4]/2) # ymax
             box[int(obj[0]) + 4] = 1 # class to one hot
             boxes[j]=box 
         assigned = assign_boxes(boxes, num_classes+1, priors)  # num_classes+1 to include background  
