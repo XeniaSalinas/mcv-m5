@@ -1,6 +1,6 @@
 # Dataset
 problem_type                 = 'classification'# ['classification' | 'detection' | 'segmentation']
-dataset_name                 = 'TT100K_trafficSigns'# Dataset name
+dataset_name                 = 'TT100K_detection_weak'# Dataset name
 dataset_name2                = None            # Second dataset name. None if not Domain Adaptation
 perc_mb2                     = None            # Percentage of data from the second dataset in each minibatch
 
@@ -73,6 +73,11 @@ checkpoint_verbose           = 0               # Verbosity of the checkpoint
 # Callback plot
 plotHist_enabled             = True            # Enable the Callback
 plotHist_verbose             = 0               # Verbosity of the callback
+
+# Callback LR decay scheduler
+lrDecayScheduler_enabled     = False           # Enable the Callback
+lrDecayScheduler_epochs      = [5, 10, 20]     # List of epochs were decay is applied or None for all epochs
+lrDecayScheduler_rate        = 2               # Decay rate (new_lr = lr / decay_rate). Usually between 2 and 10.
 
 # Data augmentation for training and normalization
 norm_imageNet_preprocess           = True     # Normalize following imagenet procedure
