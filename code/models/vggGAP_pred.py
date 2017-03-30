@@ -22,7 +22,7 @@ def build_vggGAP_pred(img_shape=(3, 224, 224), n_classes=1000):
     x = Convolution2D(1024, 3, 3, activation='relu', border_mode='same', name='conv_CAM')(x)
     base_model_extended = Model(input=base_model.input, output=x)
     y = GlobalAveragePooling2D(name="GAP")(x)
-    dense_layer = Dense(n_classes, name='dense')
+    dense_layer = Dense(n_classes, name='dense', bias=False)
     y = dense_layer(y)
     predictions = Activation("softmax", name="softmax")(y)
     model_train = Model(input=base_model.input, output=predictions)
