@@ -43,7 +43,7 @@ NUM_CLASSES = len(classes)
 
 if model_name == 'yolo' or model_name == 'tiny_yolo':
     input_shape = (3, 320, 320)
-    if model_name == 'tiny-yolo':
+    if model_name == 'tiny_yolo':
         tiny_yolo = True
     else:
         tiny_yolo = False
