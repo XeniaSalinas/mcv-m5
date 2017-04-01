@@ -7,6 +7,25 @@ if dim_ordering == 'th':
 else:
     import tensorflow as tf
     from tensorflow.python.framework import ops
+    
+from keras.common import _FLOATX, _EPSILON
+    
+# Loss function for SegNet:
+# It's just categorical cross-entropy, taken from Keras Backend (TensorFlow):
+# TODO: add class balacing (weighting)
+def cce_scratch(y_pred, y_true):
+    # Axis to perform summations (last dimension):
+    axis_sum = len(y_pred.get_shape())-1
+    # Normalize to ensure the values are probabilites (they sum up to one):
+    y_pred = tf.sum_reduce(y_pred, axis=axis_sum, keep_dims=True)
+    # Ensure all values are between 0 and 1 (I suppose this is necessary just
+    # for numerical reasons):
+    tf.clip_by_value(y_pred, \
+        clip_value_min=tf.cast(_EPSILON, dtype=_FLOATX), \
+        clip_value_max=tf.cast(1. - _EPSILON, dtype=_FLOATX))
+    # Compute cross-entropy: H(p,q) = - sum(p(x) * log(q(x)):
+    cross_entropy = - tf.sum_reduce(y_true * tf.log(y_pred), axis=axis_sum)
+    return cross_entropy
 
 def cce_flatt(void_class, weights_class):
     def categorical_crossentropy_flatt(y_true, y_pred):
