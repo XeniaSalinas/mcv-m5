@@ -14,8 +14,8 @@ from tools.yolo_utils import *
 from tools.ssd_utils import *
 
 # Input parameters to select the Dataset and the model used
-dataset_name = 'Udacity' #accepted datasets: Udacity or TT100K_detection
-model_name = 'ssd' #accepted models: yolo, tiny_yolo or ssd
+dataset_name = 'TT100K_detection' #accepted datasets: Udacity or TT100K_detection
+model_name = 'yolo' #accepted models: yolo, tiny_yolo or ssd
 
 # Net output post-processing needs two parameters:
 detection_threshold = 0.6 # Min probablity for a prediction to be considered
@@ -131,10 +131,19 @@ for i,img_path in enumerate(imfiles):
               break
        
         # You can visualize/save per image results with this:
-        #im = cv2.imread(img_path)
-        #im = yolo_draw_detections(boxes_pred, im, priors, classes, detection_threshold, nms_threshold)
-        #cv2.imshow('', im)
-        #cv2.waitKey(0)
+        if img_path.find('/test') != -1: #only for test
+          im = cv2.imread(img_path)
+          if model_name in ['yolo','tiny_yolo']:
+            im = yolo_draw_detections(boxes_pred, im, priors, classes, detection_threshold, nms_threshold)
+          elif model_name == 'ssd':
+            im = ssd_draw_detections(boxes_pred, im, classes, detection_threshold, nms_threshold)
+          #cv2.imshow('', im)
+          #cv2.waitKey(0)
+          experiment_path = sys.argv[1][:sys.argv[1].find('/weights.hdf5')]+'/results'
+          img_name = img_path[img_path.find('/test'):]
+          if not os.path.exists(experiment_path + '/test'):
+            os.makedirs(experiment_path + '/test')
+          cv2.imwrite(experiment_path + img_name,im)
 
 
     inputs = []
