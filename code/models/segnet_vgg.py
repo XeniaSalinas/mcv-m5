@@ -31,7 +31,7 @@ def build_segnet_vgg(img_shape=(3, None, None), nclasses=8, l2_reg=0.,
     padded1 = ZeroPadding2D(padding=(1, 1), name='pad1')(inputs)
 
     # Block 1
-    conv1_1 = segnet_conv2D(padded,64, 3, 3, init, block='1',layer='1', l2_reg)
+    conv1_1 = segnet_conv2D(padded1, 64, 3, 3, init, block='1',layer='1', l2_reg)
     conv1_2 = segnet_conv2D(conv1_1, 64, 3, 3, init, block='1',layer='2', l2_reg)
     pool1 = MaxPooling2D((2, 2), (2, 2), name='pool1')(conv1_2)
 
@@ -42,52 +42,52 @@ def build_segnet_vgg(img_shape=(3, None, None), nclasses=8, l2_reg=0.,
     pool2 = MaxPooling2D((2, 2), (2, 2), name='pool2')(conv2_2)
 
     # Block 3
-	padded3 = ZeroPadding2D(padding=(1, 1), name='pad2')(pool2)
+    padded3 = ZeroPadding2D(padding=(1, 1), name='pad3')(pool2)
     conv3_1 = segnet_conv2D(padded3, 256, 3, 3, init,  block='3',layer='1', l2_reg)
     conv3_2 = segnet_conv2D(conv3_1,256, 3, 3, init, block='3',layer='2', l2_reg)
     conv3_3 = segnet_conv2D(conv3_2,256, 3, 3, init, block='3',layer='3', l2_reg)
     pool3 = MaxPooling2D((2, 2), (2, 2), name='pool3')(conv3_3)
 
     # Block 4
-	padded4 = ZeroPadding2D(padding=(1, 1), name='pad2')(pool3)
+    padded4 = ZeroPadding2D(padding=(1, 1), name='pad4')(pool3)
     conv4_1 = segnet_conv2D(padded4, 512, 3, 3, init, block='4',layer='1', l2_reg)
     conv4_2 = segnet_conv2D(conv4_1,512, 3, 3, init, block='4',layer='2', l2_reg)
     conv4_3 = segnet_conv2D(conv4_2,512, 3, 3, init, block='4',layer='3', l2_reg)
     pool4 = MaxPooling2D((2, 2), (2, 2), name='pool4')(conv4_3)
 
     # Block 5
-	padded5 = ZeroPadding2D(padding=(1, 1), name='pad2')(pool4)
+    padded5 = ZeroPadding2D(padding=(1, 1), name='pad5')(pool4)
     conv5_1 = segnet_conv2D(padded5,512, 3, 3, init, block='5',layer='1', l2_reg)
     conv5_2 = segnet_conv2D(conv5_1,512, 3, 3, init, block='5',layer='2', l2_reg)
     conv5_3 = segnet_conv2D(conv5_2,512, 3, 3, init, block='5',layer='3', l2_reg)
     pool5 = MaxPooling2D((2, 2), (2, 2), name='pool5')(conv5_3)
 
-	# ##### decoding layers
+	  # ##### decoding layers
 	
-	# Block 6: Unpooling block 5
-	unpool5 = DePool2D(pool2d_layer=pool5, size=(2,2), name='unpool_block5')(pool5)
-	conv6_1 = segnet_conv2D(unpool5,512, 3, 3, init, block='6',layer='1', l2_reg)
+	  # Block 6: Unpooling block 5
+    unpool5 = DePool2D(pool2d_layer=pool5, size=(2,2), name='unpool_block5')(pool5)
+    conv6_1 = segnet_conv2D(unpool5,512, 3, 3, init, block='6',layer='1', l2_reg)
     conv6_2 = segnet_conv2D(conv6_1,512, 3, 3, init, block='6',layer='2', l2_reg)
     conv6_3 = segnet_conv2D(conv6_2,512, 3, 3, init, block='6',layer='3', l2_reg)
 	
-	# Block 7: Unpooling block 4
-	unpool4 = DePool2D(pool2d_layer=pool4, size=(2,2), name='unpool_block4')(conv6_3)
+	  # Block 7: Unpooling block 4
+    unpool4 = DePool2D(pool2d_layer=pool4, size=(2,2), name='unpool_block4')(conv6_3)
     conv7_1 = segnet_conv2D(unpool4, 512, 3, 3, init, block='7',layer='1', l2_reg)
     conv7_2 = segnet_conv2D(conv7_1,512, 3, 3, init, block='7',layer='2', l2_reg)
     conv7_3 = segnet_conv2D(conv7_2,512, 3, 3, init, block='7',layer='3', l2_reg)
 	
-	# Block 8: Unpooling block 3
-	unpool3 = DePool2D(pool2d_layer=pool3, size=(2,2), name='unpool_block3')(conv7_3)
+	  # Block 8: Unpooling block 3
+    unpool3 = DePool2D(pool2d_layer=pool3, size=(2,2), name='unpool_block3')(conv7_3)
     conv8_1 = segnet_conv2D(unpool3, 256, 3, 3, init,  block='8',layer='1', l2_reg)
     conv8_2 = segnet_conv2D(conv8_1,256, 3, 3, init, block='8',layer='2', l2_reg)
     conv8_3 = segnet_conv2D(conv8_2,256, 3, 3, init, block='8',layer='3', l2_reg)
 
-	# Block 9: Unpooling block 2
+	  # Block 9: Unpooling block 2
     unpool2 = DePool2D(pool2d_layer=pool2, size=(2,2), name='unpool_block2')(conv8_3)
     conv9_1 = segnet_conv2D(unpool2,128, 3, 3, init, block='9',layer='1', l2_reg)
     conv9_2 = segnet_conv2D(conv9_1, 128, 3, 3, init, block='9',layer='2', l2_reg)
 	
-	# Block 10: Unpooling block 1
+	  # Block 10: Unpooling block 1
     unpool1 = DePool2D(pool2d_layer=pool1, size=(2,2), name='unpool_block1')(conv9_2)
     conv10_1 = segnet_conv2D(unpool1,64, 3, 3, init, block='10',layer='1', l2_reg)
     conv10_2 = segnet_conv2D(conv10_1, 64, 3, 3, init, block='10',layer='2', l2_reg)
@@ -128,15 +128,19 @@ def freeze_layers(model, freeze_layers_from):
         layer.trainable = True
 
 		
-def segnet_conv2D(input, nfilters, filter_size, init='glorot_uniform', block, layer, l2_reg=None):
-	name = 'conv' + str(block) + '_' + str(layer)
-    x = Convolution2D(n_filters, filter_size, filter_size, init,
-                             border_mode='same',
-                             name=name,
-                             W_regularizer=l2(l2_reg))(x)
+# Keras dim orders
+def channel_idx():
+    if K.image_dim_ordering() == 'th':
+        return 1
+    else:
+        return 3
+		
+def segnet_conv2D(inputs, nfilters, filter_rows, filter_cols, init='glorot_uniform', block, layer, l2_reg=None):
+    name = 'conv' + block + '_' + layer
+    x = Convolution2D(n_filters, filter_rows, filter_cols, init, border_mode='same',name=name, W_regularizer=l2(l2_reg))(inputs)
     x = BatchNormalization(mode=0, axis=channel_idx(), name=name + '_bn')(x)
     x = Activation('relu', name=name + '_relu')(x)
-	return x
+    return x
 						   
 		
 
@@ -218,7 +222,7 @@ def load_matcovnet(model, path_weights='weights/pascal-fcn8s-dag.mat',
 if __name__ == '__main__':
     input_shape = [3, 224, 224]
     print (' > Building')
-    model = build_segnet(input_shape, 11, 0.)
+    model = build_segnet_vgg(input_shape, 11, 0.)
     print (' > Compiling')
     model.compile(loss="categorical_crossentropy", optimizer="rmsprop")
     model.summary()
