@@ -96,7 +96,7 @@ class Model_Factory():
     # Creates a Model object (not a Keras model)
     def make(self, cf, optimizer=None):
         if cf.model_name in ['lenet', 'alexNet', 'vgg16', 'vgg19', 'resnet50',
-                             'InceptionV3', 'fcn8', 'unet', 'segnet',
+                             'InceptionV3', 'fcn8', 'unet', 'segnet_vgg',
                              'segnet_basic', 'resnetFCN', 'yolo', 'tiny-yolo', 'ssd',
                              'vggGAP', 'vggGAP_pred']:
             if optimizer is None:
@@ -140,7 +140,7 @@ class Model_Factory():
         elif cf.model_name == 'segnet_vgg':
             model = build_segnet_vgg(in_shape, cf.dataset.n_classes, cf.weight_decay,
                                  freeze_layers_from=cf.freeze_layers_from,
-                                 path_weights=None, basic=False)
+                                 path_weights=None)
         elif cf.model_name == 'resnetFCN':
             model = build_resnetFCN(in_shape, cf.dataset.n_classes, cf.weight_decay,
                                     freeze_layers_from=cf.freeze_layers_from,
