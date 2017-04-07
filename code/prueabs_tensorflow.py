@@ -9,6 +9,7 @@ sys.path.insert(0, "/home/master/remote_xian/code")
 from tools.segnet_utils import unravel_argmax
 from tools.segnet_utils import argmax2coord
 from layers.segnet_layers import max_unpool_with_indices
+from layers.segnet_layers import max_pool_with_argmax
 
 
 sess = tf.InteractiveSession()
@@ -320,3 +321,41 @@ for idx1 in range(5):
 
 # Obtain results:
 a_val, x1_val, x2_val = sess.run([a, x1, x2], feed_dict={a:val_a})
+
+
+########################################################################
+########################################################################
+
+
+import sys
+sys.path.insert(0, "/home/master/remote_xian/code")
+
+from layers.segnet_layers import max_unpool_with_indices
+from layers.segnet_layers import max_pool_with_argmax
+
+from keras.applications.vgg16 import VGG16
+from keras.models import Model
+from keras.layers import Input
+from keras.layers.convolutional import Convolution2D
+from keras.preprocessing import image
+
+img_path = '/share/mastergpu/module3/MIT/test/coast/art1130.jpg'
+img = image.load_img(img_path, target_size=(224, 224))
+y = image.img_to_array(img)
+y = np.expand_dims(y, axis=0)
+
+
+inputs = Input(batch_shape=(None, 224, 224, 3))
+x = Convolution2D(8, 5, 5, activation='relu', border_mode='same', subsample=(2, 2), name='conv1')(inputs)
+x = Convolution2D(16, 5, 5, activation='relu', border_mode='same', subsample=(2, 2), name='conv2')(x)
+
+newlayer = max_pool_with_argmax(stride=2)
+newlayer = max_unpool_with_indices(stride=2)
+
+a = newlayer(x,mask=x)
+x, argmax = max_pool_with_argmax(stride=2)(x)
+x = max_unpool_with_indices(stride=2)(x, argmax)
+
+model = Model(input=inputs, output=x)
+model.compile(loss='categorical_crossentropy',optimizer='adadelta', metrics=['accuracy'])
+model.summary()
