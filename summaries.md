@@ -94,3 +94,36 @@ In order to obtain the CAM, once the modified network has been trained, all the 
 
 In the paper, this technique is applied to GoogLeNet and VGG-16. These networks are the used in ILSVRC to perform localization, reaching a top-5 error close to AlexNet, which is fully supervised (37.1% against 34.2). However, other networks that are also trained in a fully supervised way are better by a wider margin.
 
+## [Fully Convolutional Networks for Semantic Segmentation](https://arxiv.org/pdf/1411.4038.pdf)
+### Authors: Jonathan Long, Evan Shelhamer, Trevor Darrell
+
+In this paper, the authors adapt the most used classification networks into fully convolutional networks (FCN) and fine-tune them to the segmentation task. These so-called fully convolutional networks exceed the state-of-the art in semantic segmentation, while simplifying and speeding up learning inference.
+
+This network combines information from a coarse and a shallow layer to obtain accurate segmentations. The method adapts deep classification architectures, using image classification as supervised pre-training, and fine-tune fully convolutionally to learn the whole image inputs and ground truths. An FCN operates on an input of any size and produces an output of corresponding spatial dimensions. 
+
+Fully connected layers can be seen as convolutions with kernels that cover their entire input regions, so they can take as input any image size and output a classification map. However, the output dimensions are reduced by subsampling.
+The FCN model tried to implement a trick introduced in OverFeat to obtain dense predictions from coarse outputs without interpolation. It uses input shifting and output interlacing with the tradeoff that the output is made denser without decreasing the receptive field sizes of the filters but the filters are prohibited from accessing information at a finer scale than their original design.
+
+Finally, they decided to implement learning through up sampling as it was more efficient when combined with the skip layer fusion.
+Interpolation is another way to connect coarse outputs to dense pixels. A natural way to upsample is backwards convolution (deconvolution) with an output stride of f. They use in-network upsampling as a fast and effective way to learn dense predictions. 
+
+![model fcn](https://raw.githubusercontent.com/sunshineatnoon/Paper-Collection/master/images/FCN1.png "FCN8")
+
+#### Segmentation Architecture
+The model casts ILSVRC classifiers into FCNs and augment them for dense prediction with in-network upsampling and a pixelwise loss. We train for segmentation by fine-tuning and use a novel skip architecture that combines coarse, semantic and local, appearance information to refine prediction. 
+
+Optimization: they train the network with SGD momentum using a minibatch size of 20 images and fixed learning rates for each model used: FCN-AlexNet, FCN-VGG16 and FCN-GoogLeNet. The class scoring convolutions where zero-initialized and the Dropout layers of the base models kept.
+
+Fine-tuning: all the layer are fine-tuned by backpropagation through the whole net. Fine-tuning takes three days on a single GPU for the coarse FCN-32s version and about one day for the FCN-16s and FCN-8s.
+
+Patch sampling: the full image is divided into a regular grid of large, overlapping patches. Sampling the input images during training did not increase the performance and took more time.
+
+Class Balancing: the classes can be balanced by sampling or weighting the loss but was not necessary to boost the performance.
+
+Dense Prediction: Final layer deconvolutional filters are fixed to bilinear interpolation, while intermediate upsampling layers are initialized to bilinear upsampling and then learned.
+
+Augmentation: data augmentation was not used due it did not increase the performance but adding more data using a much larger dataset improved the results by 3.4 points. 
+
+#### Results
+Four metrics were used from common semantic segmentation and scene parsing evaluations that are variations on pixel accuracy and region intersection over union. The pixel accuracy, the mean accuracy, the mean IU and the frequency weighted IU. 
+
