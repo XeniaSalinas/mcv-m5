@@ -23,6 +23,7 @@ from models.ssd import build_ssd
 from models.fcn8 import build_fcn8
 #from models.unet import build_unet
 from models.segnet_vgg import build_segnet_vgg
+from models.segnet_basic import build_segnet_basic
 #from models.resnetFCN import build_resnetFCN
 #from models.densenetFCN import build_densenetFCN
 
@@ -134,9 +135,9 @@ class Model_Factory():
                                freeze_layers_from=cf.freeze_layers_from,
                                path_weights=None)
         elif cf.model_name == 'segnet_basic':
-            model = build_segnet(in_shape, cf.dataset.n_classes, cf.weight_decay,
-                                 freeze_layers_from=cf.freeze_layers_from,
-                                 path_weights=None, basic=True)
+            model = build_segnet_basic(in_shape, cf.dataset.n_classes, cf.weight_decay,
+                                       freeze_layers_from=cf.freeze_layers_from,
+                                       path_weights=None)
         elif cf.model_name == 'segnet_vgg':
             model = build_segnet_vgg(in_shape, cf.dataset.n_classes, cf.weight_decay,
                                  freeze_layers_from=cf.freeze_layers_from,
