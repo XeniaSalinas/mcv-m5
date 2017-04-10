@@ -95,7 +95,7 @@ class Model_Factory():
         return in_shape, loss, metrics
 
     # Creates a Model object (not a Keras model)
-    def make(self, cf, optimizer=None):
+    def make(self, cf, optimizer=None, model_name=None):
         if cf.model_name in ['lenet', 'alexNet', 'vgg16', 'vgg19', 'resnet50',
                              'InceptionV3', 'fcn8', 'unet', 'segnet_vgg',
                              'segnet_basic', 'resnetFCN', 'yolo', 'tiny-yolo', 'ssd',
@@ -105,7 +105,7 @@ class Model_Factory():
 
             in_shape, loss, metrics = self.basic_model_properties(cf, True)
             model = self.make_one_net_model(cf, in_shape, loss, metrics,
-                                            optimizer)
+                                            optimizer, model_name)
 
         elif cf.model_name == 'adversarial_semseg':
             if optimizer is None:
@@ -119,92 +119,99 @@ class Model_Factory():
             raise ValueError('Unknown model name')
 
         # Output the model
-        print ('   Model: ' + cf.model_name)
+        # print ('   Model: ' + cf.model_name)
         return model
 
     # Creates, compiles, plots and prints a Keras model. Optionally also loads its
     # weights.
-    def make_one_net_model(self, cf, in_shape, loss, metrics, optimizer):
+    def make_one_net_model(self, cf, in_shape, loss, metrics, optimizer, model_name):
+
+        if model_name is None:
+            build_model_name = cf.model_name
+        else:
+            build_model_name = model_name
+
         # Create the *Keras* model
-        if cf.model_name == 'fcn8':
+        if build_model_name == 'fcn8':
             model = build_fcn8(in_shape, cf.dataset.n_classes, cf.weight_decay,
                                freeze_layers_from=cf.freeze_layers_from,
                                path_weights=cf.load_imageNet)
-        elif cf.model_name == 'unet':
+        elif build_model_name == 'unet':
             model = build_unet(in_shape, cf.dataset.n_classes, cf.weight_decay,
                                freeze_layers_from=cf.freeze_layers_from,
                                path_weights=None)
-        elif cf.model_name == 'segnet_basic':
+        elif build_model_name == 'segnet_basic':
             model = build_segnet_basic(in_shape, cf.dataset.n_classes, cf.weight_decay,
                                        freeze_layers_from=cf.freeze_layers_from,
                                        path_weights=None)
-        elif cf.model_name == 'segnet_vgg':
+        elif build_model_name == 'segnet_vgg':
             model = build_segnet_vgg(in_shape, cf.dataset.n_classes, cf.weight_decay,
                                  freeze_layers_from=cf.freeze_layers_from,
                                  path_weights=None)
-        elif cf.model_name == 'resnetFCN':
+        elif build_model_name == 'resnetFCN':
             model = build_resnetFCN(in_shape, cf.dataset.n_classes, cf.weight_decay,
                                     freeze_layers_from=cf.freeze_layers_from,
                                     path_weights=None)
-        elif cf.model_name == 'densenetFCN':
+        elif build_model_name == 'densenetFCN':
             model = build_densenetFCN(in_shape, cf.dataset.n_classes, cf.weight_decay,
                                       freeze_layers_from=cf.freeze_layers_from,
                                       path_weights=None)
-        elif cf.model_name == 'lenet':
+        elif build_model_name == 'lenet':
             model = build_lenet(in_shape, cf.dataset.n_classes, cf.weight_decay)
-        elif cf.model_name == 'alexNet':
+        elif build_model_name == 'alexNet':
             model = build_alexNet(in_shape, cf.dataset.n_classes, cf.weight_decay)
-        elif cf.model_name == 'vgg16':
+        elif build_model_name == 'vgg16':
             model = build_vgg(in_shape, cf.dataset.n_classes, 16, cf.weight_decay,
                               load_pretrained=cf.load_imageNet,
                               freeze_layers_from=cf.freeze_layers_from)
-        elif cf.model_name == 'vgg19':
+        elif build_model_name == 'vgg19':
             model = build_vgg(in_shape, cf.dataset.n_classes, 19, cf.weight_decay,
                               load_pretrained=cf.load_imageNet,
                               freeze_layers_from=cf.freeze_layers_from)
-        elif cf.model_name == 'vggGAP':
+        elif build_model_name == 'vggGAP':
             model = build_vggGAP(in_shape, cf.dataset.n_classes, cf.weight_decay,
                               load_pretrained=cf.load_imageNet,
                               freeze_layers_from=cf.freeze_layers_from)
-        elif cf.model_name == 'vggGAP_pred':
+        elif build_model_name == 'vggGAP_pred':
             model = build_vggGAP_pred(in_shape, cf.dataset.n_classes, cf.weight_decay,
                               load_pretrained=cf.load_imageNet,
                               freeze_layers_from=cf.freeze_layers_from)
-        elif cf.model_name == 'resnet50':
+        elif build_model_name == 'resnet50':
             model = build_resnet50(in_shape, cf.dataset.n_classes, cf.weight_decay,
                                    load_pretrained=cf.load_imageNet,
                                    freeze_layers_from=cf.freeze_layers_from)
-        elif cf.model_name == 'InceptionV3':
+        elif build_model_name == 'InceptionV3':
             model = build_inceptionV3(in_shape, cf.dataset.n_classes,
                                       cf.weight_decay,
                                       load_pretrained=cf.load_imageNet,
                                       freeze_layers_from=cf.freeze_layers_from)
-        elif cf.model_name == 'denseNet':
+        elif build_model_name == 'denseNet':
             model = build_denseNet(in_shape, cf.dataset.n_classes, 100, 12,
                                       cf.weight_decay,
                                       load_pretrained=cf.load_imageNet,
                                       freeze_layers_from=cf.freeze_layers_from)
-        elif cf.model_name == 'yolo':
+        elif build_model_name == 'yolo':
             model = build_yolo(in_shape, cf.dataset.n_classes,
                                cf.dataset.n_priors,
                                load_pretrained=cf.load_imageNet,
                                freeze_layers_from=cf.freeze_layers_from, tiny=False)
-        elif cf.model_name == 'tiny-yolo':
+        elif build_model_name == 'tiny-yolo':
             model = build_yolo(in_shape, cf.dataset.n_classes,
                                cf.dataset.n_priors,
                                load_pretrained=cf.load_imageNet,
                                freeze_layers_from=cf.freeze_layers_from, tiny=True)
-        elif cf.model_name == 'ssd':
+        elif build_model_name == 'ssd':
             model = build_ssd(in_shape, cf.dataset.n_classes+1, #+1 to consider background
                                load_pretrained=cf.load_imageNet,
                                freeze_layers_from=cf.freeze_layers_from)
         else:
             raise ValueError('Unknown model')
 
-        # Load pretrained weights
-        if cf.load_pretrained:
-            print('   loading model weights from: ' + cf.weights_file + '...')
-            model.load_weights(cf.weights_file, by_name=True)
+        if model_name is None:
+            # Load pretrained weights
+            if cf.load_pretrained:
+                print('   loading model weights from: ' + cf.weights_file + '...')
+                model.load_weights(cf.weights_file, by_name=True)
 
         # Compile model
         model.compile(loss=loss, metrics=metrics, optimizer=optimizer)
@@ -215,7 +222,7 @@ class Model_Factory():
             plot(model, to_file=os.path.join(cf.savepath, 'model.png'))
 
         # Output the model
-        print ('   Model: ' + cf.model_name)
+        print ('   Model: ' + build_model_name)
         # model is a keras model, Model is a class wrapper so that we can have
         # other models (like GANs) made of a pair of keras models, with their
         # own ways to train, test and predict
