@@ -21,7 +21,7 @@ from models.ssd import build_ssd
 
 # Segmentation models
 from models.fcn8 import build_fcn8
-#from models.unet import build_unet
+from models.unet import build_unet
 from models.segnet_vgg import build_segnet_vgg
 from models.segnet_basic import build_segnet_basic
 #from models.resnetFCN import build_resnetFCN
