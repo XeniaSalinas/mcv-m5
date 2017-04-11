@@ -181,7 +181,7 @@ The weights resulting of our experiments can be found in this [link](https://dri
 ### SegNet
 - Implement SegNet network and integrate it into the framework.
 - SegNet VGG and SegNet Basic have been implemented and trained on CamVid dataset.
-- Train from scratch a FCN8 network on CamVid dataset.
+- Evaluate the performance on train, validation and test.
 
 ### Boost the performance
  - Ensemble of FCN8 and Segnet VGG models.
