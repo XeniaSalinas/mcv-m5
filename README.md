@@ -183,6 +183,11 @@ The weights resulting of our experiments can be found in this [link](https://dri
 - SegNet VGG and SegNet Basic have been implemented and trained on CamVid dataset.
 - Evaluate the performance on train, validation and test.
 
+### U-net (In progress)
+- Implement U-net network and integrate it into the framework.
+- U-net have been trained on CamVid dataset.
+- Evaluate the performance on train, validation and test.
+
 ### Boost the performance
  - Ensemble of FCN8 and Segnet VGG models.
  - Compute the mean of the predictions of both models to improve the performance.
@@ -213,6 +218,10 @@ If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEV
 - SegNet VGG
 	- CamVid Dataset:
 		- Train from scratch: `python train.py -c ./config/detection/camvid_segnet_vgg.py -e camvid_segnet_vgg`
+
+- U-net
+	- CamVid Dataset:
+		- Train from scratch: `python train.py -c ./config/detection/camvid_unet.py -e camvid_unet`
 		
 - Ensemble of two models
 	- Select two segmentation models on the config file and run test or predict.
