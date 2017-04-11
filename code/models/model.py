@@ -61,7 +61,7 @@ class One_Net_Model(Model):
             return None
 
     # Predict the model
-    def predict(self, test_gen, tag='pred'):
+    def predict(self, test_gen, tag='pred', prob=False, weights=None):
         if self.cf.pred_model:
             # print('Predict method not implemented.')
             # return
@@ -69,7 +69,10 @@ class One_Net_Model(Model):
             print('\n > Predicting the model...')
             # Load best trained model
             # self.model.load_weights(os.path.join(self.cf.savepath, "weights.hdf5"))
-            self.model.load_weights(self.cf.weights_file)
+            if weights == None:
+                self.model.load_weights(self.cf.weights_file)
+            else:
+                self.model.load_weights(weights)
 
             # Create a data generator
             enqueuer = GeneratorEnqueuer(test_gen)
@@ -78,8 +81,10 @@ class One_Net_Model(Model):
 
             # Process the dataset
             start_time = time.time()
+            predictions = np.zeros((self.cf.dataset.n_images_test,self.cf.target_size_test[0],self.cf.target_size_test[1],self.cf.dataset.n_classes))
+            true = np.zeros((self.cf.dataset.n_images_test,self.cf.target_size_test[0],self.cf.target_size_test[1],1))
 #            for _ in range(int(math.ceil(self.cf.dataset.n_images_train/float(self.cf.batch_size_test)))):
-            for _ in range(int(math.ceil(self.cf.dataset.n_images_test/float(self.cf.batch_size_test)))):
+            for i in range(int(math.ceil(self.cf.dataset.n_images_test/float(self.cf.batch_size_test)))):
 
                 # Get data for this minibatch
                 # data = enqueuer.queue.get()
@@ -95,9 +100,16 @@ class One_Net_Model(Model):
 
                 # Get prediction for this minibatch
                 y_pred = self.model.predict(x_true)
+                print y_true.shape
+                print y_pred.shape
 
                 # Compute the argmax
-                y_pred = np.argmax(y_pred, axis=1)
+                if not prob:
+                    y_pred = np.argmax(y_pred, axis=1)
+                    print y_pred.shape
+                    
+                predictions[i:i+y_pred.shape[0]] = y_pred
+                true[i:i+y_pred.shape[0]] = y_true
 
                 # # Reshape y_true
                 # y_true = np.reshape(y_true, (y_true.shape[0], y_true.shape[2],
@@ -114,6 +126,7 @@ class One_Net_Model(Model):
             fps = float(self.cf.dataset.n_images_test) / total_time
             s_p_f = total_time / float(self.cf.dataset.n_images_test)
             print ('   Predicting time: {}. FPS: {}. Seconds per Frame: {}'.format(total_time, fps, s_p_f))
+            return predictions, true
 
     # Test the model
     def test(self, test_gen, model_ensemble=False, weights_file_2=None):

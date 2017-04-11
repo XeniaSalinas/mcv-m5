@@ -18,7 +18,7 @@ weights_file_2                = 'weights_model2.hdf5'   # Training weight file n
 
 # Parameters
 train_model                  = False            # Train the model
-test_model                   = True            # Test the model
+test_model                   = False            # Test the model
 pred_model                   = True           # Predict using the model
 
 # Debug

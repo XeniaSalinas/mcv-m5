@@ -15,6 +15,7 @@ from tools.dataset_generators import Dataset_Generators
 from tools.optimizer_factory import Optimizer_Factory
 from callbacks.callbacks_factory import Callbacks_Factory
 from models.model_factory import Model_Factory
+from metrics.metrics import IoU
 
 from numpy  import array
 
@@ -66,7 +67,7 @@ def process(cf):
                 test_metrics_model_2, metrics_names = model2.test(test_gen, model_ensemble=True, weights_file_2=weights_test_file_model2)
                 test_metrics_model_2 = array(test_metrics_model_2)
 
-                A1 = 1.5
+                A1 = 1
                 A2 = 1
                 # Perform the mean of the metrics
                 total_metrics = A1*test_metrics_model + A2*test_metrics_model_2 / 2
@@ -107,8 +108,27 @@ def process(cf):
 
 
     if cf.pred_model:
-        # Compute test metrics
-        model.predict(test_gen, tag='pred')
+        # Check if a second model is selected to apply an Ensemble of models
+        if hasattr(cf, 'model_name_2'):
+            iou = IoU(cf.dataset.n_classes,cf.dataset.void_class)
+            if cf.model_name_2 != None:
+                print('\n > Prediction the model using an ensemble of models...')
+                predict1, _ = model.predict(test_gen, tag='pred', prob=False)
+                weights_file_model2 = os.path.join(cf.savepath, cf.weights_file_2)
+                predict2, true = model2.predict(test_gen, tag='pred', prob=True, weights=weights_file_model2)
+                               
+                predict = predict1 + predict2 / 2            
+                y_pred = np.argmax(predict, axis=3)
+                print y_pred.shape
+                print true.shape
+                
+                #for i in range (y_pred.shape[0]):
+                    #iou(true[i], y_pred[i])
+        else:
+            # Compute test metrics
+            model.predict(test_gen, tag='pred')
+            
+            
 
     # Finish
     print (' ---> Finish experiment: ' + cf.exp_name + ' <---')
