@@ -116,14 +116,31 @@ def process(cf):
                 predict1, _ = model.predict(test_gen, tag='pred', prob=True)
                 weights_file_model2 = os.path.join(cf.savepath, cf.weights_file_2)
                 predict2, true = model2.predict(test_gen, tag='pred', prob=True, weights=weights_file_model2)
-                               
-                predict = predict1 + predict2 / 2            
-                y_pred = np.argmax(predict, axis=3)
-                print y_pred.shape
-                print true.shape
                 
-                #for i in range (y_pred.shape[0]):
-                    #iou(true[i], y_pred[i])
+                predict = predict1 + predict2 / 2
+                
+                if cf.problem_type == 'segmentation':
+                    y_pred = np.argmax(predict, axis=3)
+                    y_pred = y_pred.reshape(cf.dataset.n_images_test,cf.target_size_test[0],cf.target_size_test[1],1)                    
+                    
+                    total_metrics = iou(true, y_pred)
+                    
+                    # Compute Jaccard per class
+                    metrics_dict = dict(zip(metrics_names, total_metrics))
+                    I = np.zeros(cf.dataset.n_classes)
+                    U = np.zeros(cf.dataset.n_classes)
+                    jacc_percl = np.zeros(cf.dataset.n_classes)
+                    for i in range(cf.dataset.n_classes):
+                        I[i] = metrics_dict['I' + str(i)]
+                        U[i] = metrics_dict['U' + str(i)]
+                        jacc_percl[i] = I[i] / U[i]
+                        print ('   {:2d} ({:^15}): Jacc: {:6.2f}'.format(i,
+                                                                         cf.dataset.classes[i],
+                                                                         jacc_percl[i] * 100))
+                    # Compute jaccard mean
+                    jacc_mean = np.nanmean(jacc_percl)
+                    print ('   Jaccard mean: {}'.format(jacc_mean))       
+                
         else:
             # Compute test metrics
             model.predict(test_gen, tag='pred')
