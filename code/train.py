@@ -141,7 +141,9 @@ def main():
     parser.add_argument('-e', '--exp_name', type=str,
                         default=None, help='Name of the experiment')
     parser.add_argument('-s', '--shared_path', type=str,
+                        default='/home/master/m5_project/data/', help='Name of the experiment')
     parser.add_argument('-l', '--local_path', type=str,
+                        default='/home/master/m5_project/data/', help='Name of the experiment')
 
     arguments = parser.parse_args()
 
@@ -164,8 +166,7 @@ def main():
     # Load configuration files
     configuration = Configuration(arguments.config_path, arguments.exp_name,
                                   dataset_path, shared_dataset_path,
-                                  experiments_path, shared_experiments_path,
-                                  usr_path)
+                                  experiments_path, shared_experiments_path)
     cf = configuration.load()
 
     # Train /test/predict with the network, depending on the configuration
