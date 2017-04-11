@@ -183,7 +183,7 @@ The weights resulting of our experiments can be found in this [link](https://dri
 - SegNet VGG and SegNet Basic have been implemented and trained on CamVid dataset.
 - Evaluate the performance on train, validation and test.
 
-### U-net (In progress)
+### U-net (In training)
 - Implement U-net network and integrate it into the framework.
 - U-net have been trained on CamVid dataset.
 - Evaluate the performance on train, validation and test.
