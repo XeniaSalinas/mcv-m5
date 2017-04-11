@@ -94,6 +94,8 @@ In order to obtain the CAM, once the modified network has been trained, all the 
 
 In the paper, this technique is applied to GoogLeNet and VGG-16. These networks are the used in ILSVRC to perform localization, reaching a top-5 error close to AlexNet, which is fully supervised (37.1% against 34.2). However, other networks that are also trained in a fully supervised way are better by a wider margin.
 
+# Segmentation
+
 ## [Fully Convolutional Networks for Semantic Segmentation](https://arxiv.org/pdf/1411.4038.pdf)
 ### Authors: Jonathan Long, Evan Shelhamer, Trevor Darrell
 
@@ -127,3 +129,36 @@ Augmentation: data augmentation was not used due it did not increase the perform
 #### Results
 Four metrics were used from common semantic segmentation and scene parsing evaluations that are variations on pixel accuracy and region intersection over union. The pixel accuracy, the mean accuracy, the mean IU and the frequency weighted IU. 
 
+## [SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
+### Authors: Vijay Badrinarayanan, Alex Kendall, Roberto Cipolla
+
+In this paper, the authors presented an encoder-decoder engine for image semantic segmentation. The focus of this architecture is to obtain features which are useful for accurate boundary localization. They also considered the computational perspective looking for a network efficient in memory and computational time terms. Finally, they considered important that the network has the ability of being trained end-to-end.
+
+The encoder network is composed by the 13 convolutional layers of VGG16, for this reason they e initialize the training process from weights trained for classification on large datasets. The decoder network consists of a hierarchy of decoders one corresponding to each encoder, decoders use the max-pooling indices received from the corresponding encoder to perform non-linear up sampling of their input feature maps. With this technique, the boundary delineation is improved and the number of parameters for training is reduced. The final decoder output is fed to a multi-class soft-max classifier to produce class probabilities for each pixel independently.
+
+Each encoder performs a convolution, then a batch normalization, after that ReLU is applied, followed by a max-pooling with a 2x2 window and finally a subsampling with a 2 factor is applied. Max-pooling and subsampling achieve translation invariance for classification but on the other hand there is a loss of spatial resolution. To avoid this loss, the locations of the maximum feature value in each pooling window is memorized for each encoder feature map. The decoder up samples the input feature map using the memorized max-pooling indices from the corresponding encoder, then its output is convolved to obtain dense feature maps and finally batch normalization is applied.
+
+They designed some different decoder variants:
+- Bilinear-Interpolation: up sampling using fixed bilinear interpolation weights, it does not require learning for up sampling.
+- SegNet-Basic: 4 encoders and 4 decoders. The encoders perform max-pooling (saving indices) and subsampling, batch normalization is applied both on the encoder and decoder, there are no baises and no ReLU nonlinearity in the decoder. A 7x7 kernel is applied both on the encoder and the decoder, getting a wide image context.
+- SegNet-Basic-EncoderAddition: Use the pooling indices for up sampling followed by a convolutional step to densify the input and then add the corresponding 64 encoder feature maps to produce the decoders output.
+- SegNet-Basic-SingleChannelDecoder: SegNet-Basic version where the decoder filters are single channel.
+- FCN-Basic: SegNet-Basic encoder network and FCN decoding technique on the decoder network.
+- FCN-Basic-NoAddition: FCN-Basic variant without the encoder feature map addition step and only learns the up-sampling kernels.
+- FCN-Basic-NoDimReduction: There is no dimensionality reduction performed for the encoder feature maps, the number of channels at the end of each decoder is the same as the corresponding encoder.
+- FCN-Basic-NoAddition-NoDimReduction: Variant without addition step and dimensionality reduction for the encoder feature maps.
+
+For training, they used the CamVid dataset performing previously a local contrast normalization. They use stochastic gradient descent (SGD) with a fixed learning rate of 0.1 and momentum of 0.9, training until the cross-entropy loss convergence. The used mini-batch is composed by 12 images and before each epoch the training set is shuffled. They applied class balancing (weight the loss differently depending on the true class) applying the median frequency balancing algorithm, the weight is ratio of the median of class frequencies computed on the entire training set divided by the class frequency.
+
+To compare the performance, they used:
+- Global accuracy: Percentage of pixels correctly classified.
+- Class average accuracy: mean of the predictive accuracy over all classes.
+- Mean intersection over union: where false positive predictions are penalized.
+- Boundary F1-measuer: average the image F1 measures (precision and recall values between the predicted and ground truth class boundary given a pixel tolerance distance).
+
+Analyzing the obtained results, they had seen the importance of learning decoders for segmentation. They also see that SegNet and FCN-Basic performed similarly but SegNet uses less memory during inference because it only saves max-pooling indices, but FCN-Basic is faster because it has less convolutions on the decoder part. They also realize that SegNet-Basic outperforms FCN-Basic-NoAddition because it captures the information present in the encoder feature maps. Another observation is that SegNet-Basic has a competitive training accuracy when compared to larger models such FCNBasic-NoDimReduction. The comparison between FCN-BasicNoAddition and SegNet-Basic-SingleChannelDecoder shows that using max-pooling indices for up sampling and an overall larger decoder leads to better performance. When both memory and inference time is not constrained, larger models such as FCN-Basic-NoDimReduction and SegNet-EncoderAddition are both more accurate. Finally, they observed that without weighting the results are poorer for all the variants.
+They concluded that the best performance is achieved when encoder feature maps are stored in full, that to improve performance when inference memory is constrained encoder feature maps can be compressed before storing and that larger decoders increase performance for a given encoder network.
+
+They compared SegNet performance with other techniques. First, they compared with CRFs and realize that SegNet obtains competitive results, showing the ability of deep architectures to extract meaningful features from the input image and map it to accurate and smooth class segment labels. They also compared with state-of-the-art deep techniques and saw that DeconvNet has a higher boundary delineation accuracy but SegNet is much more efficient as compared to DeconvNet. For the FCN model learning the deconvolutional layers as opposed to fixing them with bi-linear interpolation weights improves performance particularly the BF score.
+
+Finally, they studied the SegNet performance on indoor images and realized that SegNet obtains reasonable predictions when the size of the classes are large under different viewpoints. However as compared to outdoor scenes the segmentation quality is clearly noisier.
