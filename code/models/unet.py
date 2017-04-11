@@ -32,27 +32,27 @@ def build_unet(img_shape=(3, None, None), nclasses=8, l2_reg=0.,
     padded1 = ZeroPadding2D(padding=(100, 100), name='padded1')(inputs)
 
     # Block 1
-	conv1_1 = Convolution2D(64, 3, 3, init, 'relu', border_mode='valid', name='conv1_1', W_regularizer=l2(l2_reg))(input_layer)
+    conv1_1 = Convolution2D(64, 3, 3, init, 'relu', border_mode='valid', name='conv1_1', W_regularizer=l2(l2_reg))(padded1)
     conv1_2 = Convolution2D(64, 3, 3, init, 'relu', border_mode='valid', name='conv1_2', W_regularizer=l2(l2_reg))(conv1_1)
     pool1 = MaxPooling2D(pool_size=(2,2), name='pool1')(conv1_2)
 
-	# Block 2
+	  # Block 2
     conv2_1 = Convolution2D(128, 3, 3, init, 'relu', border_mode='valid', name='conv2_1', W_regularizer=l2(l2_reg))(pool1)
     conv2_2 = Convolution2D(128, 3, 3, init, 'relu', border_mode='valid', name='conv2_2', W_regularizer=l2(l2_reg))(conv2_1)
     pool2 = MaxPooling2D(pool_size=(2,2), name='pool2')(conv2_2)
 	
-	# Block 3
+	  # Block 3
     conv3_1 = Convolution2D(256, 3, 3, init, 'relu', border_mode='valid', name='conv3_1', W_regularizer=l2(l2_reg))(pool2)
     conv3_2 = Convolution2D(256, 3, 3, init, 'relu', border_mode='valid', name='conv3_2', W_regularizer=l2(l2_reg))(conv3_1)
     pool3 = MaxPooling2D(pool_size=(2,2), name='pool3')(conv3_2)
 
-	# Block 4
+	  # Block 4
     conv4_1 = Convolution2D(512, 3, 3, init, 'relu', border_mode='valid', name='conv4_1', W_regularizer=l2(l2_reg))(pool3)
     conv4_2 = Convolution2D(512, 3, 3, init, 'relu', border_mode='valid', name='conv4_2', W_regularizer=l2(l2_reg))(conv4_1)
     conv4_drop = Dropout(0.5, name='conv4_drop')(conv4_2)
     pool4 = MaxPooling2D(pool_size=(2,2), name='pool4')(conv4_drop)
 
-	# Block 5
+	  # Block 5
     bottom_conv1 = Convolution2D(1024, 3, 3, init, 'relu', border_mode='valid', name='bottom_conv1', W_regularizer=l2(l2_reg))(pool4)
     bottom_conv2 = Convolution2D(1024, 3, 3, init, 'relu', border_mode='valid', name='bottom_conv2', W_regularizer=l2(l2_reg))(bottom_conv1)
     bottom_drop = Dropout(0.5, name='bottom_drop')(bottom_conv2)
@@ -60,9 +60,10 @@ def build_unet(img_shape=(3, None, None), nclasses=8, l2_reg=0.,
 	#uncoder blocks
 	
 	# Block 6
-	deconv4 = Deconvolution2D(512, 2, 2, bottom_drop._keras_shape, init,'linear', border_mode='valid', subsample=(2, 2), name='deconv4', W_regularizer=l2(l2_reg))(bottom_drop)
-    deconv4_crop = CropLayer2D(deconv4, name='deconv4_crop')(conv4_drop)
-    deconv4_concat = merge([deconv4_crop, deconv4], mode='concat', concat_axis=3, name='deconv4_concat')
+    deconv4 = Deconvolution2D(512, 2, 2, bottom_drop._keras_shape, init,'linear', border_mode='valid', subsample=(2, 2), name='deconv4', W_regularizer=l2(l2_reg))(bottom_drop)
+    conv4_crop = CropLayer2D(deconv4, name='conv4_crop')(conv4_drop)
+    deconv4_crop = CropLayer2D(deconv4, name='deconv4_crop')(deconv4)
+    deconv4_concat = merge([deconv4_crop, conv4_crop], mode='concat', concat_axis=3, name='deconv4_concat')
     deconv4_1 = Convolution2D(512, 3, 3, init, 'relu', border_mode='valid', name='deconv4_1', W_regularizer=l2(l2_reg))(deconv4_concat)
     deconv4_2 = Convolution2D(512, 3, 3, init, 'relu', border_mode='valid', name='deconv4_2', W_regularizer=l2(l2_reg))(deconv4_1)
 
@@ -86,13 +87,13 @@ def build_unet(img_shape=(3, None, None), nclasses=8, l2_reg=0.,
     deconv1_concat = merge([deconv1_crop, deconv1], mode='concat', concat_axis=3, name='deconv1_concat')
     deconv1_1 = Convolution2D(64, 3, 3, init, 'relu', border_mode='valid', name='deconv1_1', W_regularizer=l2(l2_reg))(deconv1_concat)
     deconv1_2 = Convolution2D(64, 3, 3, init, 'relu', border_mode='valid', name='deconv1_2', W_regularizer=l2(l2_reg))(deconv1_1)
-
+  
     l1 = Convolution2D(nclasses, 1, 1, border_mode='valid',name='logits')(deconv1_2)
     score = CropLayer2D(inputs, name='score')(l1)
     # Softmax
     softmax_segnet = NdSoftmax()(score)
 
-    # Complete model
+    # Complete model  
     model = Model(input=inputs, output=softmax_segnet)
 
     # Load pretrained Model
