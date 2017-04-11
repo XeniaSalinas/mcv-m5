@@ -100,13 +100,10 @@ class One_Net_Model(Model):
 
                 # Get prediction for this minibatch
                 y_pred = self.model.predict(x_true)
-                print y_true.shape
-                print y_pred.shape
 
                 # Compute the argmax
                 if not prob:
                     y_pred = np.argmax(y_pred, axis=1)
-                    print y_pred.shape
                     
                 predictions[i:i+y_pred.shape[0]] = y_pred
                 true[i:i+y_pred.shape[0]] = y_true

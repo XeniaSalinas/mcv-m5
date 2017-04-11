@@ -113,7 +113,7 @@ def process(cf):
             iou = IoU(cf.dataset.n_classes,cf.dataset.void_class)
             if cf.model_name_2 != None:
                 print('\n > Prediction the model using an ensemble of models...')
-                predict1, _ = model.predict(test_gen, tag='pred', prob=False)
+                predict1, _ = model.predict(test_gen, tag='pred', prob=True)
                 weights_file_model2 = os.path.join(cf.savepath, cf.weights_file_2)
                 predict2, true = model2.predict(test_gen, tag='pred', prob=True, weights=weights_file_model2)
                                
