@@ -166,3 +166,61 @@ If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEV
 The summary of week 3/4 results can be found in this [link](https://docs.google.com/presentation/d/18LAQ4oPBahXFwfIXP-z77KeSHZ3ZdCD9sSPX-1ivDng/edit?usp=sharing).	
 
 The weights resulting of our experiments can be found in this [link](https://drive.google.com/open?id=0B2fYuDqzasf7Y3dWSTgwT25wZkk).
+
+# Week 5/6
+
+## Goals
+- Learn to segment objects in images using state of the art neural networks.
+- Use CamVid and cityscapes datasets to train the models.
+
+### FCN8
+- Train from scratch a FCN8 network on CamVid dataset.
+- Evaluate the performance on train, validation and test.
+- Train from scratch a FCN8 network on cityscapes dataset.
+
+### SegNet
+- Implement SegNet network and integrate it into the framework.
+- SegNet VGG and SegNet Basic have been implemented and trained on CamVid dataset.
+- Train from scratch a FCN8 network on CamVid dataset.
+
+### Boost the performance
+ - Ensemble of FCN8 and Segnet VGG models.
+ - Compute the mean of the predictions of both models to improve the performance.
+ 
+## Contributions 
+- Added new config files to run the segmentation models in `code/config/segmentation/`.
+- Adaptation of SegNet models into the framework in `code/models/segnet_basic.py` and `code/layers/segnet_vgg.py`.
+- Compute the ensemble of two segmentation methods using `code/config/segmentation/camvid_segmentation_ensemble.py`
+
+## Usage
+
+For running this commands, please locate in folder `mcv-m5/code`.
+
+In general, for running the code use `python train.py -c config/config_file_name.py -e experiment_name` where `config_file_name` is your config file and `experiment_name` is the folder name where your experiment is going to be saved. 
+
+If you have a GPU and CUDA installed, before each command put  `CUDA_VISIBLE_DEVICES=0`.
+
+- FCN8
+	- CamVid Dataset:
+		- Train from scratch: `python train.py -c ./config/detection/camvid_segmentation.py -e camvid_segmentation`
+	- Cityscapes Dataset
+		- Train from scratch: `python train.py -c ./config/detection/cityscapes_fcn8_segmentation.py -e cityscapes_fcn8_segmentation`
+		
+- SegNet Basic
+	- CamVid Dataset:
+		- Train from scratch: `python train.py -c ./config/detection/camvid_segnet_basic.py -e camvid_segnet_basic`
+		
+- SegNet VGG
+	- CamVid Dataset:
+		- Train from scratch: `python train.py -c ./config/detection/camvid_segnet_vgg.py -e camvid_segnet_vgg`
+		
+- Ensemble of two models
+	- Select two segmentation models on the config file and run test or predict.
+	- Put the weigths of both models with the names specified in the config file inside the experiment folder.
+	- Run: `python train.py -c ./config/detection/camvid_segmentation_ensemble.py -e test_ensemble`
+		
+## Results
+
+The summary of week 5/6 results can be found in this [link](https://docs.google.com/presentation/d/18LAQ4oPBahXFwfIXP-z77KeSHZ3ZdCD9sSPX-1ivDng/edit?usp=sharing).	
+
+The weights resulting of our experiments can be found in this [link](https://drive.google.com/open?id=0B2fYuDqzasf7TjZHczVUTlFoRHM).
