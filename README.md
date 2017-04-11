@@ -194,7 +194,8 @@ The weights resulting of our experiments can be found in this [link](https://dri
  
 ## Contributions 
 - Added new config files to run the segmentation models in `code/config/segmentation/`.
-- Adaptation of SegNet models into the framework in `code/models/segnet_basic.py` and `code/layers/segnet_vgg.py`.
+- Adaptation of SegNet models into the framework in `code/models/segnet_basic.py` and `code/models/segnet_vgg.py`.
+- Adaptation of U-net model into the framework in `code/models/unet.py`.
 - Compute the ensemble of two segmentation methods using `code/config/segmentation/camvid_segmentation_ensemble.py`
 
 ## Usage
