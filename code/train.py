@@ -36,11 +36,6 @@ def process(cf):
     print ('\n > Building model...')
     model = Model_Factory().make(cf, optimizer)
 
-    # Build the second model for ensembling
-    if hasattr(cf, 'model_name_2'):
-        if cf.model_name_2 != None:
-            model2 = Model_Factory().make(cf, optimizer, model_name=cf.model_name_2)
-
     # Create the callbacks
     print ('\n > Creating callbacks...')
     cb = Callbacks_Factory().make(cf, valid_gen)
@@ -50,102 +45,12 @@ def process(cf):
         model.train(train_gen, valid_gen, cb)
 
     if cf.test_model:
-
-        # Check if a second model is selected to apply an Ensemble of models
-        if hasattr(cf, 'model_name_2'):
-            if cf.model_name_2 != None:
-                print('\n > Testing the model using an ensemble of models...')
-                # Compute test metrics
-                start_time_global = time.time()
-
-                #Test first model
-                test_metrics_model, metrics_names = model.test(test_gen, model_ensemble=True)
-                test_metrics_model = array(test_metrics_model)
-
-                #Test second model
-                weights_test_file_model2 = os.path.join(cf.savepath, cf.weights_file_2)
-                test_metrics_model_2, metrics_names = model2.test(test_gen, model_ensemble=True, weights_file_2=weights_test_file_model2)
-                test_metrics_model_2 = array(test_metrics_model_2)
-
-                A1 = 1
-                A2 = 1
-                # Perform the mean of the metrics
-                total_metrics = A1*test_metrics_model + A2*test_metrics_model_2 / 2
-
-                total_metrics.tolist()
-
-                total_time_global = time.time() - start_time_global
-                fps = float(cf.dataset.n_images_test) / total_time_global
-                s_p_f = total_time_global / float(cf.dataset.n_images_test)
-                print ('   Testing time: {}. FPS: {}. Seconds per Frame: {}'.format(total_time_global, fps, s_p_f))
-                metrics_dict = dict(zip(metrics_names, total_metrics))
-                print ('   Test metrics: ')
-                for k in metrics_dict.keys():
-                    print ('      {}: {}'.format(k, metrics_dict[k]))
-
-                if cf.problem_type == 'segmentation':
-                    # Compute Jaccard per class
-                    metrics_dict = dict(zip(metrics_names, total_metrics))
-                    I = np.zeros(cf.dataset.n_classes)
-                    U = np.zeros(cf.dataset.n_classes)
-                    jacc_percl = np.zeros(cf.dataset.n_classes)
-                    for i in range(cf.dataset.n_classes):
-                        I[i] = metrics_dict['I' + str(i)]
-                        U[i] = metrics_dict['U' + str(i)]
-                        jacc_percl[i] = I[i] / U[i]
-                        print ('   {:2d} ({:^15}): Jacc: {:6.2f}'.format(i,
-                                                                         cf.dataset.classes[i],
-                                                                         jacc_percl[i] * 100))
-                    # Compute jaccard mean
-                    jacc_mean = np.nanmean(jacc_percl)
-                    print ('   Jaccard mean: {}'.format(jacc_mean))
-            else:
-                # Compute test metrics
-                model.test(test_gen)
-        else:
-            # Compute test metrics
-            model.test(test_gen)
-
+        # Compute test metrics
+        model.test(test_gen)
 
     if cf.pred_model:
-        # Check if a second model is selected to apply an Ensemble of models
-        if hasattr(cf, 'model_name_2'):
-            iou = IoU(cf.dataset.n_classes,cf.dataset.void_class)
-            if cf.model_name_2 != None:
-                print('\n > Prediction the model using an ensemble of models...')
-                predict1, _ = model.predict(test_gen, tag='pred', prob=True)
-                weights_file_model2 = os.path.join(cf.savepath, cf.weights_file_2)
-                predict2, true = model2.predict(test_gen, tag='pred', prob=True, weights=weights_file_model2)
-                
-                predict = predict1 + predict2 / 2
-                
-                if cf.problem_type == 'segmentation':
-                    y_pred = np.argmax(predict, axis=3)
-                    y_pred = y_pred.reshape(cf.dataset.n_images_test,cf.target_size_test[0],cf.target_size_test[1],1)                    
-                    
-                    total_metrics = iou(true, y_pred)
-                    
-                    # Compute Jaccard per class
-                    metrics_dict = dict(zip(metrics_names, total_metrics))
-                    I = np.zeros(cf.dataset.n_classes)
-                    U = np.zeros(cf.dataset.n_classes)
-                    jacc_percl = np.zeros(cf.dataset.n_classes)
-                    for i in range(cf.dataset.n_classes):
-                        I[i] = metrics_dict['I' + str(i)]
-                        U[i] = metrics_dict['U' + str(i)]
-                        jacc_percl[i] = I[i] / U[i]
-                        print ('   {:2d} ({:^15}): Jacc: {:6.2f}'.format(i,
-                                                                         cf.dataset.classes[i],
-                                                                         jacc_percl[i] * 100))
-                    # Compute jaccard mean
-                    jacc_mean = np.nanmean(jacc_percl)
-                    print ('   Jaccard mean: {}'.format(jacc_mean))       
-                
-        else:
-            # Compute test metrics
-            model.predict(test_gen, tag='pred')
-            
-            
+        # Compute test metrics
+        model.predict(test_gen, tag='pred')
 
     # Finish
     print (' ---> Finish experiment: ' + cf.exp_name + ' <---')
